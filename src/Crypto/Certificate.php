@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Crypto;
+namespace Mci\Acme\Crypto;
 
-use PhpAcme\Exception\CryptoException;
-use PhpAcme\Util\Domain;
+use Mci\Acme\Exception\CryptoException;
+use Mci\Acme\Util\Domain;
 
 /**
  * 一张已签发的证书，以及证书链的拆分。

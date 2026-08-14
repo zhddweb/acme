@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge;
+namespace Mci\Acme\Challenge;
 
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Protocol\Challenge;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Protocol\Challenge;
 
 /**
  * 挑战求解器：负责「把答案摆到 CA 能看见的地方」。

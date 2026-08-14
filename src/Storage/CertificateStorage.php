@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Storage;
+namespace Mci\Acme\Storage;
 
-use PhpAcme\Crypto\Certificate;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\StorageException;
-use PhpAcme\Util\Domain;
-use PhpAcme\Util\Filesystem;
+use Mci\Acme\Crypto\Certificate;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\StorageException;
+use Mci\Acme\Util\Domain;
+use Mci\Acme\Util\Filesystem;
 
 /**
  * 证书套件的落盘与读取。

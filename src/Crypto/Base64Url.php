@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Crypto;
+namespace Mci\Acme\Crypto;
 
-use PhpAcme\Exception\CryptoException;
+use Mci\Acme\Exception\CryptoException;
 
 /**
  * base64url 编解码（RFC 4648 §5）。
@@ -47,6 +47,6 @@ final class Base64Url
      */
     public static function encodeJson($value): string
     {
-        return self::encode(\PhpAcme\Util\Json::encode($value));
+        return self::encode(\Mci\Acme\Util\Json::encode($value));
     }
 }

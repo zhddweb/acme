@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Util;
+namespace Mci\Acme\Util;
 
-use PhpAcme\Exception\DnsException;
+use Mci\Acme\Exception\DnsException;
 
 /**
  * 轻量 DNS 客户端，直接向指定服务器发 UDP 查询。

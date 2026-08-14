@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Exception;
+namespace Mci\Acme\Exception;
 
 /**
  * 网络层失败：连不上、超时、TLS 握手失败、响应体读不全。

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Http\Transport;
+namespace Mci\Acme\Http\Transport;
 
-use PhpAcme\Exception\HttpException;
-use PhpAcme\Http\Request;
-use PhpAcme\Http\Response;
+use Mci\Acme\Exception\HttpException;
+use Mci\Acme\Http\Request;
+use Mci\Acme\Http\Response;
 
 /**
  * 测试用传输层：不发网络请求，按预设规则返回响应。

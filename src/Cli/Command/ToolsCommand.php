@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Challenge\Dns01\ProviderFactory;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Crypto\Certificate;
-use PhpAcme\Crypto\Csr;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Util\DnsResolver;
-use PhpAcme\Util\Domain;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Challenge\Dns01\ProviderFactory;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Crypto\Certificate;
+use Mci\Acme\Crypto\Csr;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Util\DnsResolver;
+use Mci\Acme\Util\Domain;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Logger;
 
 /**
  * 零散的工具命令：生成密钥/CSR、看证书、查 DNS、列 CA 与 DNS 提供商。
@@ -39,7 +39,7 @@ class ToolsCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme tools <工具> [选项]',
+            '用法：mci-acme tools <工具> [选项]',
             '',
             '工具：',
             '  create-key -k <类型> [-o <文件>]          生成一把私钥',
@@ -85,12 +85,12 @@ class ToolsCommand implements CommandInterface
     {
         $command = $args->getCommand();
 
-        // 直接当命令用：php-acme create-key -k ec-256
+        // 直接当命令用：mci-acme create-key -k ec-256
         if ($command !== '' && $command !== 'tools') {
             return $command;
         }
 
-        // 子形式：php-acme tools create-key
+        // 子形式：mci-acme tools create-key
         $second = $args->getArgument(1);
         if ($second !== null && $second !== '') {
             return $second;
@@ -280,7 +280,7 @@ class ToolsCommand implements CommandInterface
 
         $logger->write(sprintf('%-22s %-22s %s', ProviderFactory::MANUAL, '手动 DNS', '（无需凭据，不能自动续期）'));
         $logger->write('');
-        $logger->write('用法：先 export 对应的变量，再 php-acme issue -d 域名 --dns <短名>');
+        $logger->write('用法：先 export 对应的变量，再 mci-acme issue -d 域名 --dns <短名>');
         $logger->write('签发时凭据会存进证书目录的 .conf，之后续期不用再 export。');
 
         return 0;

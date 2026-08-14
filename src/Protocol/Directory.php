@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Protocol;
+namespace Mci\Acme\Protocol;
 
-use PhpAcme\Exception\ProtocolException;
-use PhpAcme\Http\HttpClient;
+use Mci\Acme\Exception\ProtocolException;
+use Mci\Acme\Http\HttpClient;
 
 /**
  * ACME 的目录文档（RFC 8555 §7.1.1）。

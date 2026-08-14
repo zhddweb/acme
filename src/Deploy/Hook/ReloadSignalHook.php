@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Deploy\Hook;
+namespace Mci\Acme\Deploy\Hook;
 
-use PhpAcme\Deploy\DeployHookInterface;
-use PhpAcme\Exception\DeployException;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Deploy\DeployHookInterface;
+use Mci\Acme\Exception\DeployException;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Logger;
 
 /**
  * 给服务进程发信号让它重新加载证书。

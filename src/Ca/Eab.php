@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Ca;
+namespace Mci\Acme\Ca;
 
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Exception\ProtocolException;
-use PhpAcme\Http\HttpClient;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Exception\ProtocolException;
+use Mci\Acme\Http\HttpClient;
 
 /**
  * External Account Binding 凭据。

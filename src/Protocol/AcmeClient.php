@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Protocol;
+namespace Mci\Acme\Protocol;
 
-use PhpAcme\Crypto\Certificate;
-use PhpAcme\Crypto\Csr;
-use PhpAcme\Crypto\Jws;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ProtocolException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Http\Response;
-use PhpAcme\Util\Domain;
-use PhpAcme\Util\Json;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Crypto\Certificate;
+use Mci\Acme\Crypto\Csr;
+use Mci\Acme\Crypto\Jws;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ProtocolException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Util\Domain;
+use Mci\Acme\Util\Json;
+use Mci\Acme\Util\Logger;
 
 /**
  * ACME 协议客户端：把 RFC 8555 的每个端点包成一个方法。
@@ -589,13 +589,13 @@ class AcmeClient
             'url' => $url,
         ]);
 
-        $encodedProtected = \PhpAcme\Crypto\Base64Url::encode($protected);
-        $encodedPayload = \PhpAcme\Crypto\Base64Url::encodeJson($payload);
+        $encodedProtected = \Mci\Acme\Crypto\Base64Url::encode($protected);
+        $encodedPayload = \Mci\Acme\Crypto\Base64Url::encodeJson($payload);
 
         return [
             'protected' => $encodedProtected,
             'payload' => $encodedPayload,
-            'signature' => \PhpAcme\Crypto\Base64Url::encode(
+            'signature' => \Mci\Acme\Crypto\Base64Url::encode(
                 $newKey->signForJws($encodedProtected . '.' . $encodedPayload)
             ),
         ];

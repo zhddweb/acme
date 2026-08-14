@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Storage;
+namespace Mci\Acme\Storage;
 
-use PhpAcme\Util\Filesystem;
+use Mci\Acme\Util\Filesystem;
 
 /**
  * `KEY='value'` 形式的配置文件读写。
@@ -206,7 +206,7 @@ class ConfigFile
             $this->load();
         }
 
-        $lines = ['# php-acme 自动生成，格式与 acme.sh 的 .conf 兼容，可以手工编辑'];
+        $lines = ['# mci-acme 自动生成，格式与 acme.sh 的 .conf 兼容，可以手工编辑'];
 
         // 排序保证同样的配置每次写出来字节相同——否则每次续期都会让
         // 版本控制里的配置文件产生无意义的 diff

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Exception;
+namespace Mci\Acme\Exception;
 
 /**
  * ACME 服务端返回了 problem document（RFC 7807）。

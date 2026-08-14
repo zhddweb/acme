@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Http;
+namespace Mci\Acme\Http;
 
-use PhpAcme\Util\Json;
+use Mci\Acme\Util\Json;
 
 /**
  * 一次 HTTP 响应。

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Http\Transport;
+namespace Mci\Acme\Http\Transport;
 
-use PhpAcme\Http\Request;
-use PhpAcme\Http\Response;
+use Mci\Acme\Http\Request;
+use Mci\Acme\Http\Response;
 
 /**
  * 真正把请求发出去的那一层。
@@ -17,7 +17,7 @@ use PhpAcme\Http\Response;
 interface TransportInterface
 {
     /**
-     * @throws \PhpAcme\Exception\HttpException 连不上、超时、读不全时抛
+     * @throws \Mci\Acme\Exception\HttpException 连不上、超时、读不全时抛
      */
     public function send(Request $request): Response;
 

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Util\Json;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Util\Json;
+use Mci\Acme\Util\Logger;
 
 /**
  * 看一张证书的详细信息。
@@ -30,7 +30,7 @@ class InfoCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme info -d <域名> [--ecc] [--json]',
+            '用法：mci-acme info -d <域名> [--ecc] [--json]',
         ]);
     }
 
@@ -47,7 +47,7 @@ class InfoCommand implements CommandInterface
         $certificate = $storage->loadCertificate($domain, $ecc);
         if ($certificate === null) {
             throw new ConfigException(sprintf(
-                '找不到 %s 的证书%s。用 php-acme list 看看有哪些',
+                '找不到 %s 的证书%s。用 mci-acme list 看看有哪些',
                 $domain,
                 $ecc ? '（ECC）' : ''
             ));
@@ -98,7 +98,7 @@ class InfoCommand implements CommandInterface
         $keyPair = $storage->loadKey($domain, $ecc);
         if ($keyPair !== null && !$certificate->matchesPrivateKey($keyPair)) {
             $logger->write('');
-            $logger->write('⚠ 私钥与证书不匹配！用 php-acme issue --force --new-key 重新签发');
+            $logger->write('⚠ 私钥与证书不匹配！用 mci-acme issue --force --new-key 重新签发');
         }
 
         return 0;

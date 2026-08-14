@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Notify;
+namespace Mci\Acme\Notify;
 
-use PhpAcme\Util\Logger;
+use Mci\Acme\Util\Logger;
 
 /**
  * 把多个通知渠道串起来，逐个发。

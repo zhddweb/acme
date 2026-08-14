@@ -30,9 +30,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/../lib/bootstrap.php';
 
-use PhpAcme\Acme;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Logger;
 
 $t = new Runner('Let\'s Encrypt staging 真实签发');
 
@@ -56,7 +56,7 @@ if (\is_string($dns) && $dns !== '') {
     exit(0);
 }
 
-$base = sys_get_temp_dir() . '/php-acme-staging-' . getmypid();
+$base = sys_get_temp_dir() . '/mci-acme-staging-' . getmypid();
 
 $logger = new Logger(Logger::LEVEL_DEBUG, STDOUT);
 $acme = new Acme($base, $logger);
@@ -103,7 +103,7 @@ $t->ok($forced->isIssued(), '强制续期应当成功');
 $t->group('吊销');
 
 $t->noThrow(static function () use ($acme, $domain): void {
-    $acme->revoke($domain, true, \PhpAcme\Service\RevocationService::REASON_CESSATION_OF_OPERATION);
+    $acme->revoke($domain, true, \Mci\Acme\Service\RevocationService::REASON_CESSATION_OF_OPERATION);
 }, '吊销应当成功');
 
 echo sprintf("\n  测试数据在 %s，确认无误后可以删掉。\n\n", $base);

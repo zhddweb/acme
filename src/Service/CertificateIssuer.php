@@ -2,22 +2,22 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Service;
+namespace Mci\Acme\Service;
 
-use PhpAcme\Challenge\ChallengeSolverInterface;
-use PhpAcme\Crypto\Certificate;
-use PhpAcme\Crypto\Csr;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ChallengeException;
-use PhpAcme\Exception\ProtocolException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Protocol\AcmeClient;
-use PhpAcme\Protocol\Authorization;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Protocol\Order;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Storage\Paths;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\ChallengeSolverInterface;
+use Mci\Acme\Crypto\Certificate;
+use Mci\Acme\Crypto\Csr;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ChallengeException;
+use Mci\Acme\Exception\ProtocolException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Protocol\AcmeClient;
+use Mci\Acme\Protocol\Authorization;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Protocol\Order;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Storage\Paths;
+use Mci\Acme\Util\Logger;
 
 /**
  * 签发编排：把协议层的一堆调用串成「给我一张证书」这一件事。

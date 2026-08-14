@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Storage;
+namespace Mci\Acme\Storage;
 
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Util\Domain;
-use PhpAcme\Util\Platform;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Util\Domain;
+use Mci\Acme\Util\Platform;
 
 /**
  * 目录布局的唯一权威。
@@ -40,18 +40,18 @@ class Paths
     /**
      * 默认根目录。
      *
-     * 优先认 PHP_ACME_HOME，方便在 web sapi 下把它指到可写位置；
-     * 其次是 ~/.php-acme。有意不叫 .acme.sh——共存时不会互相覆盖，
+     * 优先认 MCI_ACME_HOME，方便在 web sapi 下把它指到可写位置；
+     * 其次是 ~/.mci-acme。有意不叫 .acme.sh——共存时不会互相覆盖，
      * 想接管 acme.sh 的数据显式把 baseDir 指过去即可。
      */
     public static function defaultBaseDir(): string
     {
-        $custom = getenv('PHP_ACME_CONFIG_HOME');
+        $custom = getenv('MCI_ACME_CONFIG_HOME');
         if (\is_string($custom) && $custom !== '') {
             return rtrim($custom, '/\\');
         }
 
-        return Platform::homeDirectory() . '/.php-acme';
+        return Platform::homeDirectory() . '/.mci-acme';
     }
 
     public function getBaseDir(): string

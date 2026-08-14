@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Notify\Hook;
+namespace Mci\Acme\Notify\Hook;
 
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Notify\NotifierInterface;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Notify\NotifierInterface;
+use Mci\Acme\Util\Logger;
 
 /**
  * Bark（iOS 推送）。
@@ -53,7 +53,7 @@ class BarkNotifier implements NotifierInterface
                 'body' => $body,
                 // 失败的通知用 timeSensitive，能穿透专注模式
                 'level' => $success ? 'active' : 'timeSensitive',
-                'group' => 'php-acme',
+                'group' => 'mci-acme',
             ]);
 
             return $response->isSuccess();

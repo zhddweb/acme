@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01;
+namespace Mci\Acme\Challenge\Dns01;
 
-use PhpAcme\Challenge\AbstractSolver;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\DnsException;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\AbstractSolver;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\DnsException;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Util\Logger;
 
 /**
  * dns-01：通过解析商 API 加一条 TXT 记录来证明域名归属。

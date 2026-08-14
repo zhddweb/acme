@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli;
+namespace Mci\Acme\Cli;
 
-use PhpAcme\Acme;
-use PhpAcme\Exception\AcmeException;
-use PhpAcme\Exception\ProtocolException;
-use PhpAcme\Storage\Paths;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Exception\AcmeException;
+use Mci\Acme\Exception\ProtocolException;
+use Mci\Acme\Storage\Paths;
+use Mci\Acme\Util\Logger;
 
 /**
  * CLI 入口：解析参数、挑命令、统一处理错误与退出码。
  *
  * 命令有两种写法，都支持：
  *
- *     php-acme issue -d example.com -w /var/www      # 子命令风格
- *     php-acme --issue -d example.com -w /var/www    # acme.sh 风格
+ *     mci-acme issue -d example.com -w /var/www      # 子命令风格
+ *     mci-acme --issue -d example.com -w /var/www    # acme.sh 风格
  *
  * 后者是为了让现有的 acme.sh 调用脚本改个程序名就能跑。
  */
@@ -71,7 +71,7 @@ class Application
         $args = new ArgvParser(\array_slice($argv, 1));
 
         if ($args->getFlag('version')) {
-            $this->writeLine(sprintf('php-acme %s（PHP %s）', Acme::VERSION, PHP_VERSION));
+            $this->writeLine(sprintf('mci-acme %s（PHP %s）', Acme::VERSION, PHP_VERSION));
 
             return self::EXIT_SUCCESS;
         }
@@ -204,11 +204,11 @@ class Application
         }
 
         $lines = [
-            sprintf('php-acme %s —— 用原生 PHP 实现的 ACME 客户端（acme.sh 的功能对等实现）', Acme::VERSION),
+            sprintf('mci-acme %s —— 用原生 PHP 实现的 ACME 客户端（acme.sh 的功能对等实现）', Acme::VERSION),
             '',
             '用法：',
-            '  php-acme <命令> [选项]',
-            '  php-acme --<命令> [选项]        # 兼容 acme.sh 的写法',
+            '  mci-acme <命令> [选项]',
+            '  mci-acme --<命令> [选项]        # 兼容 acme.sh 的写法',
             '',
             '命令：',
         ];
@@ -224,25 +224,25 @@ class Application
         $lines[] = '  --debug             打印调试日志，含每一次 HTTP 请求';
         $lines[] = '  --quiet             只输出错误';
         $lines[] = '  --log <文件>        把日志追加写到文件，cron 里建议加上';
-        $lines[] = '  --help              查看某个命令的详细用法：php-acme help issue';
+        $lines[] = '  --help              查看某个命令的详细用法：mci-acme help issue';
         $lines[] = '  --version           显示版本';
         $lines[] = '';
         $lines[] = '常见用法：';
         $lines[] = '  # 用网站根目录验证，签一张双域名证书';
-        $lines[] = '  php-acme issue -d example.com -d www.example.com -w /var/www/html';
+        $lines[] = '  mci-acme issue -d example.com -d www.example.com -w /var/www/html';
         $lines[] = '';
         $lines[] = '  # 用 Cloudflare DNS 验证，签通配符证书';
         $lines[] = '  export CF_Token=你的令牌';
-        $lines[] = '  php-acme issue -d example.com -d "*.example.com" --dns dns_cf';
+        $lines[] = '  mci-acme issue -d example.com -d "*.example.com" --dns dns_cf';
         $lines[] = '';
         $lines[] = '  # 装到 nginx 用的位置，并给 nginx 发重载信号';
-        $lines[] = '  php-acme install-cert -d example.com \\';
+        $lines[] = '  mci-acme install-cert -d example.com \\';
         $lines[] = '      --key-file /etc/nginx/ssl/example.com.key \\';
         $lines[] = '      --fullchain-file /etc/nginx/ssl/example.com.crt \\';
         $lines[] = '      --reload-service nginx';
         $lines[] = '';
         $lines[] = '  # 续期全部证书（放进 cron 每天跑一次）';
-        $lines[] = '  php-acme renew-all --log /var/log/php-acme.log';
+        $lines[] = '  mci-acme renew-all --log /var/log/mci-acme.log';
 
         $this->writeLine(implode("\n", $lines));
     }

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Util\Logger;
 
 /**
  * 续期全部证书。cron 里就跑这个。
@@ -27,7 +27,7 @@ class RenewAllCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme renew-all [选项]',
+            '用法：mci-acme renew-all [选项]',
             '',
             '选项：',
             '  -f, --force        强制续期全部证书（会撞速率限制，慎用）',
@@ -37,7 +37,7 @@ class RenewAllCommand implements CommandInterface
             '单张失败不影响其他证书，最后统一汇报。',
             '',
             '放进 cron（每天凌晨 3 点 27 分跑一次，错开整点避开 CA 的高峰）：',
-            '  27 3 * * * /usr/bin/php /path/to/php-acme renew-all --log /var/log/php-acme.log',
+            '  27 3 * * * /usr/bin/php /path/to/mci-acme renew-all --log /var/log/mci-acme.log',
         ]);
     }
 

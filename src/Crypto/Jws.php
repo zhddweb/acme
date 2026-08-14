@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Crypto;
+namespace Mci\Acme\Crypto;
 
-use PhpAcme\Exception\CryptoException;
-use PhpAcme\Util\Json;
+use Mci\Acme\Exception\CryptoException;
+use Mci\Acme\Util\Json;
 
 /**
  * JWS 签名封装（RFC 7515 的 flattened JSON 序列化）。
@@ -169,7 +169,7 @@ final class Jws
         }
 
         $half = intdiv($length, 2);
-        $der = \PhpAcme\Asn1\DerParser::encodeEcdsaSignature(
+        $der = \Mci\Acme\Asn1\DerParser::encodeEcdsaSignature(
             substr($signature, 0, $half),
             substr($signature, $half)
         );

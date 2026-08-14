@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Util;
+namespace Mci\Acme\Util;
 
-use PhpAcme\Exception\ConfigException;
+use Mci\Acme\Exception\ConfigException;
 
 /**
  * 国际化域名（IDN）与 punycode。

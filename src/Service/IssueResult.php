@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Service;
+namespace Mci\Acme\Service;
 
-use PhpAcme\Crypto\Certificate;
+use Mci\Acme\Crypto\Certificate;
 
 /**
  * 一次签发的结果。

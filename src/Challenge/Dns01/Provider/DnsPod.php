@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01\Provider;
+namespace Mci\Acme\Challenge\Dns01\Provider;
 
-use PhpAcme\Challenge\Dns01\AbstractDnsProvider;
-use PhpAcme\Exception\DnsException;
+use Mci\Acme\Challenge\Dns01\AbstractDnsProvider;
+use Mci\Acme\Exception\DnsException;
 
 /**
  * DNSPod 国内版（acme.sh 里的 dns_dp）。
@@ -103,7 +103,7 @@ class DnsPod extends AbstractDnsProvider
         $response = $this->send('POST', self::API . $path, http_build_query($params), [
             'Content-Type' => 'application/x-www-form-urlencoded',
             // DNSPod 要求带 UA 且必须包含联系邮箱，否则直接拒绝
-            'User-Agent' => 'php-acme/1.0 (https://github.com/likun-mci/acme)',
+            'User-Agent' => 'mci-acme/1.0 (https://github.com/likun-mci/acme)',
         ]);
 
         $data = $response->tryJson();

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Deploy\Hook;
+namespace Mci\Acme\Deploy\Hook;
 
-use PhpAcme\Deploy\DeployHookInterface;
-use PhpAcme\Exception\DeployException;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Deploy\DeployHookInterface;
+use Mci\Acme\Exception\DeployException;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Logger;
 
 /**
  * 导出成 PKCS#12（.pfx / .p12）。
@@ -76,7 +76,7 @@ class Pkcs12Hook implements DeployHookInterface
         // 中间证书要一起打进去，否则客户端会因为链不完整而报警告
         $chain = $caPath !== null ? $this->filesystem->readIfExists($caPath) : null;
         if ($chain !== null && trim($chain) !== '') {
-            $options['extracerts'] = \PhpAcme\Crypto\Certificate::splitChain($chain);
+            $options['extracerts'] = \Mci\Acme\Crypto\Certificate::splitChain($chain);
         }
 
         $output = '';

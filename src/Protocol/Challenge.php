@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Protocol;
+namespace Mci\Acme\Protocol;
 
-use PhpAcme\Crypto\Jws;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ProtocolException;
+use Mci\Acme\Crypto\Jws;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ProtocolException;
 
 /**
  * 一个挑战（RFC 8555 §8）。
@@ -141,13 +141,13 @@ class Challenge
     /** CA 会去访问的完整 URL，打日志用 */
     public function getHttpUrl(): string
     {
-        return sprintf('http://%s/%s', \PhpAcme\Util\Domain::stripWildcard($this->domain), $this->getHttpPath());
+        return sprintf('http://%s/%s', \Mci\Acme\Util\Domain::stripWildcard($this->domain), $this->getHttpPath());
     }
 
     /** dns-01 要写的记录名 */
     public function getDnsRecordName(): string
     {
-        return \PhpAcme\Util\Domain::challengeRecordName($this->domain);
+        return \Mci\Acme\Util\Domain::challengeRecordName($this->domain);
     }
 
     public function toArray(): array

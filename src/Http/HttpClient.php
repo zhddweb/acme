@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Http;
+namespace Mci\Acme\Http;
 
-use PhpAcme\Exception\HttpException;
-use PhpAcme\Http\Transport\CurlTransport;
-use PhpAcme\Http\Transport\StreamTransport;
-use PhpAcme\Http\Transport\TransportInterface;
-use PhpAcme\Util\Json;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Exception\HttpException;
+use Mci\Acme\Http\Transport\CurlTransport;
+use Mci\Acme\Http\Transport\StreamTransport;
+use Mci\Acme\Http\Transport\TransportInterface;
+use Mci\Acme\Util\Json;
+use Mci\Acme\Util\Logger;
 
 /**
  * HTTP 客户端：重试、重定向、超时、代理、日志都在这一层。
@@ -62,7 +62,7 @@ class HttpClient
         $this->logger = $logger !== null ? $logger : Logger::silent();
         $this->transport = $transport !== null ? $transport : self::detectTransport();
         $this->userAgent = sprintf(
-            'php-acme/%s (+https://github.com/likun-mci/acme) PHP/%s',
+            'mci-acme/%s (+https://github.com/likun-mci/acme) PHP/%s',
             self::VERSION,
             PHP_VERSION
         );

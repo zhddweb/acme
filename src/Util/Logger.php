@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Util;
+namespace Mci\Acme\Util;
 
 /**
  * 极简日志器。

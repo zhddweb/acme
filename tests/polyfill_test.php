@@ -16,7 +16,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('polyfill');
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Deploy\Hook;
+namespace Mci\Acme\Deploy\Hook;
 
-use PhpAcme\Deploy\DeployHookInterface;
-use PhpAcme\Exception\DeployException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Deploy\DeployHookInterface;
+use Mci\Acme\Exception\DeployException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Logger;
 
 /**
  * 把证书 POST 给一个 HTTP 接口。

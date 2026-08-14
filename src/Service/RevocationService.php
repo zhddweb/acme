@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Service;
+namespace Mci\Acme\Service;
 
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Protocol\AcmeClient;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Protocol\AcmeClient;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Util\Logger;
 
 /**
  * 吊销证书。

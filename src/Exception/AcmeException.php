@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Exception;
+namespace Mci\Acme\Exception;
 
 /**
  * 本库所有异常的基类。

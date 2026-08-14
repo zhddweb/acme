@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01;
+namespace Mci\Acme\Challenge\Dns01;
 
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Exception\DnsException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Http\Response;
-use PhpAcme\Util\Domain;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Exception\DnsException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Util\Domain;
+use Mci\Acme\Util\Logger;
 
 /**
  * DNS 提供商的公共部分：凭据读取、zone 定位、HTTP 调用与错误包装。
@@ -168,7 +168,7 @@ abstract class AbstractDnsProvider implements DnsProviderInterface
         $payload = null;
 
         if (\is_array($body)) {
-            $payload = \PhpAcme\Util\Json::encode($body);
+            $payload = \Mci\Acme\Util\Json::encode($body);
             if (!isset($headers['Content-Type'])) {
                 $headers['Content-Type'] = 'application/json';
             }
@@ -194,7 +194,7 @@ abstract class AbstractDnsProvider implements DnsProviderInterface
             $parts = [];
             foreach ($data['errors'] as $error) {
                 if (\is_array($error)) {
-                    $parts[] = isset($error['message']) ? (string) $error['message'] : \PhpAcme\Util\Json::encode($error);
+                    $parts[] = isset($error['message']) ? (string) $error['message'] : \Mci\Acme\Util\Json::encode($error);
                 } else {
                     $parts[] = (string) $error;
                 }
@@ -214,7 +214,7 @@ abstract class AbstractDnsProvider implements DnsProviderInterface
             }
         }
 
-        return \PhpAcme\Util\Json::encode($data);
+        return \Mci\Acme\Util\Json::encode($data);
     }
 
     /** 记录名去掉 zone 后缀；zone 顶点返回 '@' */

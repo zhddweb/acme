@@ -19,7 +19,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('禁止外部进程调用');
 
@@ -176,7 +176,7 @@ foreach ($directory as $file) {
 }
 
 $files[] = __DIR__ . '/../bootstrap.php';
-$files[] = __DIR__ . '/../bin/php-acme';
+$files[] = __DIR__ . '/../bin/mci-acme';
 
 sort($files, SORT_STRING);
 

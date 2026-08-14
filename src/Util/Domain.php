@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Util;
+namespace Mci\Acme\Util;
 
-use PhpAcme\Exception\ConfigException;
+use Mci\Acme\Exception\ConfigException;
 
 /**
  * 域名处理：校验、通配符、以及 dns-01 最关键的「把域名切成 zone + 主机名」。

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Service\RevocationService;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Service\RevocationService;
+use Mci\Acme\Util\Logger;
 
 /**
  * 吊销证书。
@@ -34,7 +34,7 @@ class RevokeCommand implements CommandInterface
         }
 
         return implode("\n", array_merge([
-            '用法：php-acme revoke -d <域名> [--reason <码>] [--ecc] [--remove]',
+            '用法：mci-acme revoke -d <域名> [--reason <码>] [--ecc] [--remove]',
             '',
             '选项：',
             '      --reason <码>   吊销原因，默认 0：',
@@ -69,7 +69,7 @@ class RevokeCommand implements CommandInterface
         $logger->write(sprintf('%s 的证书已吊销。', $domain));
 
         if (!$args->getFlag('remove')) {
-            $logger->write('本地文件还留着，确认无误后可以用 php-acme remove -d ' . $domain . ' 删掉。');
+            $logger->write('本地文件还留着，确认无误后可以用 mci-acme remove -d ' . $domain . ' 删掉。');
         }
 
         return 0;

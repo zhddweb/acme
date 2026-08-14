@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Exception\HttpException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Http\Request;
-use PhpAcme\Http\Response;
-use PhpAcme\Http\Transport\MockTransport;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Exception\HttpException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Http\Request;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Http\Transport\MockTransport;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('HTTP 客户端');
 
@@ -171,7 +171,7 @@ $request = $client->buildRequest('POST', 'https://acme.test/x', '{"a":1}', ['Con
 
 $t->equals('POST', $request->getMethod(), '方法');
 $t->equals('application/jose+json', $request->getHeader('content-type'), '取头时不分大小写');
-$t->contains('php-acme/', (string) $request->getHeader('User-Agent'), '应当自动带上 User-Agent');
+$t->contains('mci-acme/', (string) $request->getHeader('User-Agent'), '应当自动带上 User-Agent');
 
 $t->group('MockTransport 的断言能力');
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Storage\ConfigFile;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Storage\ConfigFile;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('配置文件与 CA 注册表');
 

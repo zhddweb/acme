@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Challenge\Dns01\DnsProviderInterface;
-use PhpAcme\Challenge\Dns01\DnsSolver;
-use PhpAcme\Challenge\Http01\WebrootSolver;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ChallengeException;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Service\SolverFactory;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Filesystem;
+use Mci\Acme\Challenge\Dns01\DnsProviderInterface;
+use Mci\Acme\Challenge\Dns01\DnsSolver;
+use Mci\Acme\Challenge\Http01\WebrootSolver;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ChallengeException;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Service\SolverFactory;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Filesystem;
 
 $t = new Runner('挑战求解器');
 
@@ -129,7 +129,7 @@ final class FakeDnsProvider implements DnsProviderInterface
         $this->calls[] = ['remove', $fqdn, $value];
 
         if ($this->failRemoval) {
-            throw new \PhpAcme\Exception\DnsException('模拟的删除失败');
+            throw new \Mci\Acme\Exception\DnsException('模拟的删除失败');
         }
 
         if (!isset($this->records[$fqdn])) {
@@ -209,11 +209,11 @@ $t->equals('dns-01', $factory->create('dns_manual')->getType(), '手动 DNS');
 
 $t->throws(static function () use ($factory): void {
     $factory->create('/不存在的目录');
-}, \PhpAcme\Exception\ConfigException::class, '不存在的 webroot 目录应当报错');
+}, \Mci\Acme\Exception\ConfigException::class, '不存在的 webroot 目录应当报错');
 
 $t->throws(static function () use ($factory): void {
     $factory->create('');
-}, \PhpAcme\Exception\ConfigException::class, '空的验证方式应当报错并给出三个选项');
+}, \Mci\Acme\Exception\ConfigException::class, '空的验证方式应当报错并给出三个选项');
 
 $t->group('SolverFactory 的多 webroot 解析');
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Notify\Hook;
+namespace Mci\Acme\Notify\Hook;
 
-use PhpAcme\Notify\NotifierInterface;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Notify\NotifierInterface;
+use Mci\Acme\Util\Logger;
 
 /**
  * 用 PHP 的 mail() 发邮件。

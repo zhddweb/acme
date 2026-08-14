@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01;
+namespace Mci\Acme\Challenge\Dns01;
 
 /**
  * DNS 提供商适配器。
@@ -33,14 +33,14 @@ interface DnsProviderInterface
      * @param string $fqdn 完整记录名，如 _acme-challenge.example.com
      * @param string $value 记录值（43 字节的 base64url 串）
      *
-     * @throws \PhpAcme\Exception\DnsException
+     * @throws \Mci\Acme\Exception\DnsException
      */
     public function addTxtRecord(string $fqdn, string $value): void;
 
     /**
      * 删掉之前加的那条 TXT 记录。
      *
-     * @throws \PhpAcme\Exception\DnsException
+     * @throws \Mci\Acme\Exception\DnsException
      */
     public function removeTxtRecord(string $fqdn, string $value): void;
 }

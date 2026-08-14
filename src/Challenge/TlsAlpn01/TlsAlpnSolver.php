@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\TlsAlpn01;
+namespace Mci\Acme\Challenge\TlsAlpn01;
 
-use PhpAcme\Challenge\AbstractSolver;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Crypto\SelfSignedCertificate;
-use PhpAcme\Exception\ChallengeException;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Logger;
-use PhpAcme\Util\Platform;
+use Mci\Acme\Challenge\AbstractSolver;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Crypto\SelfSignedCertificate;
+use Mci\Acme\Exception\ChallengeException;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Logger;
+use Mci\Acme\Util\Platform;
 
 /**
  * tls-alpn-01（RFC 8737）：在 443 端口用一张特制自签证书应答。
@@ -88,7 +88,7 @@ class TlsAlpnSolver extends AbstractSolver
         // PHP 的 SSL 上下文只认文件路径，没法直接喂内存里的 PEM，
         // 所以必须落一个临时文件。权限 0600，用完立刻删
         $path = sprintf(
-            '%s/php-acme-alpn-%s.pem',
+            '%s/mci-acme-alpn-%s.pem',
             $this->tempDir,
             substr(hash('sha256', $challenge->getDomain() . $challenge->getToken()), 0, 16)
         );

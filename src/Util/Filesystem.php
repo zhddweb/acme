@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Util;
+namespace Mci\Acme\Util;
 
-use PhpAcme\Exception\StorageException;
+use Mci\Acme\Exception\StorageException;
 
 /**
  * 文件读写。

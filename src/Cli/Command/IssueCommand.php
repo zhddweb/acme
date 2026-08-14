@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Challenge\Dns01\ProviderFactory;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Service\SolverFactory;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Challenge\Dns01\ProviderFactory;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Service\SolverFactory;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Util\Logger;
 
 /**
  * 签发证书。这是整个 CLI 的主命令。
@@ -33,7 +33,7 @@ class IssueCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme issue -d <域名> [-d <域名>...] <验证方式> [选项]',
+            '用法：mci-acme issue -d <域名> [-d <域名>...] <验证方式> [选项]',
             '',
             '验证方式（三选一）：',
             '  -w, --webroot <目录>     http-01：把验证文件写到网站根目录',
@@ -60,9 +60,9 @@ class IssueCommand implements CommandInterface
             '  ' . implode(' ', ProviderFactory::supportedProviders()),
             '',
             '例子：',
-            '  php-acme issue -d example.com -d www.example.com -w /var/www/html',
-            '  php-acme issue -d example.com -d "*.example.com" --dns dns_cf -k ec-384',
-            '  php-acme issue -d example.com --standalone --ca letsencrypt_test',
+            '  mci-acme issue -d example.com -d www.example.com -w /var/www/html',
+            '  mci-acme issue -d example.com -d "*.example.com" --dns dns_cf -k ec-384',
+            '  mci-acme issue -d example.com --standalone --ca letsencrypt_test',
         ]);
     }
 
@@ -101,7 +101,7 @@ class IssueCommand implements CommandInterface
         $logger->write('');
         $logger->write('接下来通常要把证书装到服务用的位置：');
         $logger->write(sprintf(
-            '  php-acme install-cert -d %s --key-file /path/to/key --fullchain-file /path/to/crt --reload-service nginx',
+            '  mci-acme install-cert -d %s --key-file /path/to/key --fullchain-file /path/to/crt --reload-service nginx',
             $result->getMainDomain()
         ));
 

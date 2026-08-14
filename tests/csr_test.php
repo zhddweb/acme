@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Crypto\Csr;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Crypto\Csr;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('CSR 生成');
 
@@ -89,7 +89,7 @@ $t->throws(
     static function (): void {
         Csr::pemToDer('这不是 CSR');
     },
-    \PhpAcme\Exception\CryptoException::class,
+    \Mci\Acme\Exception\CryptoException::class,
     '非 PEM 内容应当报错'
 );
 

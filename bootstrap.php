@@ -15,7 +15,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/src/polyfill.php';
 
 spl_autoload_register(static function (string $class): void {
-    $prefix = 'PhpAcme\\';
+    $prefix = 'Mci\Acme\\';
     $baseDir = __DIR__ . '/src/';
 
     $len = \strlen($prefix);

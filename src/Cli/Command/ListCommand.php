@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Util\Json;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Util\Json;
+use Mci\Acme\Util\Logger;
 
 /**
  * 列出本机所有证书。
@@ -29,7 +29,7 @@ class ListCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme list [--json]',
+            '用法：mci-acme list [--json]',
             '',
             '选项：',
             '  --json    输出 JSON，方便脚本处理与接监控',
@@ -42,7 +42,7 @@ class ListCommand implements CommandInterface
         $items = $storage->listCertificates();
 
         if ($items === []) {
-            $logger->write('本机还没有任何证书。用 php-acme issue 签发第一张。');
+            $logger->write('本机还没有任何证书。用 mci-acme issue 签发第一张。');
 
             return 0;
         }

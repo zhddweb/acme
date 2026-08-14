@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01\Provider;
+namespace Mci\Acme\Challenge\Dns01\Provider;
 
-use PhpAcme\Challenge\Dns01\AbstractDnsProvider;
-use PhpAcme\Exception\DnsException;
-use PhpAcme\Util\Domain;
+use Mci\Acme\Challenge\Dns01\AbstractDnsProvider;
+use Mci\Acme\Exception\DnsException;
+use Mci\Acme\Util\Domain;
 
 /**
  * DuckDNS（acme.sh 里的 dns_duckdns）。

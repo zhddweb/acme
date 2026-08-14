@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01\Provider;
+namespace Mci\Acme\Challenge\Dns01\Provider;
 
-use PhpAcme\Challenge\Dns01\AbstractDnsProvider;
-use PhpAcme\Exception\ConfigException;
+use Mci\Acme\Challenge\Dns01\AbstractDnsProvider;
+use Mci\Acme\Exception\ConfigException;
 
 /**
  * Cloudflare（acme.sh 里的 dns_cf）。

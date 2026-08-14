@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Http01;
+namespace Mci\Acme\Challenge\Http01;
 
-use PhpAcme\Challenge\AbstractSolver;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ChallengeException;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Util\Logger;
-use PhpAcme\Util\Platform;
+use Mci\Acme\Challenge\AbstractSolver;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ChallengeException;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Util\Logger;
+use Mci\Acme\Util\Platform;
 
 /**
  * http-01：自己在 80 端口上起一个极简 HTTP 服务器来应答。

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01\Provider;
+namespace Mci\Acme\Challenge\Dns01\Provider;
 
-use PhpAcme\Challenge\Dns01\AbstractDnsProvider;
+use Mci\Acme\Challenge\Dns01\AbstractDnsProvider;
 
 /**
  * 阿里云 DNS（acme.sh 里的 dns_ali）。
@@ -117,7 +117,7 @@ class AliyunDns extends AbstractDnsProvider
         $data = $response->tryJson();
         if ($data === null) {
             if ($throwOnError) {
-                throw new \PhpAcme\Exception\DnsException(sprintf(
+                throw new \Mci\Acme\Exception\DnsException(sprintf(
                     '阿里云 DNS 返回了非 JSON 内容（HTTP %d）：%s',
                     $response->getStatus(),
                     substr($response->getBody(), 0, 200)
@@ -132,7 +132,7 @@ class AliyunDns extends AbstractDnsProvider
                 return null;
             }
 
-            throw new \PhpAcme\Exception\DnsException(sprintf(
+            throw new \Mci\Acme\Exception\DnsException(sprintf(
                 '阿里云 DNS 返回错误：%s %s',
                 isset($data['Code']) ? (string) $data['Code'] : 'HTTP ' . $response->getStatus(),
                 isset($data['Message']) ? (string) $data['Message'] : ''

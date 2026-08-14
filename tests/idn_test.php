@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Util\Idn;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Util\Idn;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('IDN 与 punycode');
 

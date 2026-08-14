@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01;
+namespace Mci\Acme\Challenge\Dns01;
 
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Util\Logger;
 
 /**
  * 按短名创建 DNS 提供商实例，并负责凭据的来源。

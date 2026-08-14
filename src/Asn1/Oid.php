@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Asn1;
+namespace Mci\Acme\Asn1;
 
 /**
  * 用得到的 OID 常量。

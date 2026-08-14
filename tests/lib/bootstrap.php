@@ -20,7 +20,7 @@ if (is_file($vendorAutoload)) {
 // 测试辅助类不走 composer 的 autoload-dev（没跑 composer install 时它不存在），
 // 直接注册一个加载器
 spl_autoload_register(static function (string $class): void {
-    $prefix = 'PhpAcme\\Tests\\';
+    $prefix = 'Mci\Acme\\Tests\\';
     if (strncmp($prefix, $class, \strlen($prefix)) !== 0) {
         return;
     }
@@ -36,7 +36,7 @@ spl_autoload_register(static function (string $class): void {
  */
 function test_temp_dir(string $name): string
 {
-    $dir = sys_get_temp_dir() . '/php-acme-test-' . $name . '-' . getmypid();
+    $dir = sys_get_temp_dir() . '/mci-acme-test-' . $name . '-' . getmypid();
 
     if (is_dir($dir)) {
         test_remove_dir($dir);

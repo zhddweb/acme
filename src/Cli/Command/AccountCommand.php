@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Ca\Eab;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Protocol\AcmeClient;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Ca\Eab;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Protocol\AcmeClient;
+use Mci\Acme\Util\Logger;
 
 /**
  * 账户相关操作：注册、改邮箱、换密钥、注销、查看。
@@ -32,7 +32,7 @@ class AccountCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme account <动作> [选项]',
+            '用法：mci-acme account <动作> [选项]',
             '',
             '动作：',
             '  show        显示当前账户信息（默认）',
@@ -176,7 +176,7 @@ class AccountCommand implements CommandInterface
 
         if ($account === null) {
             $logger->write(sprintf(
-                '本机还没有 %s 的账户。首次签发时会自动创建，也可以跑 php-acme account register 手工建。',
+                '本机还没有 %s 的账户。首次签发时会自动创建，也可以跑 mci-acme account register 手工建。',
                 CaRegistry::getDisplayName($ca)
             ));
 

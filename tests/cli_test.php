@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Cli\Application;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Cli\Application;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('命令行');
 
@@ -59,13 +59,13 @@ $t->group('必填参数缺失');
 
 $t->throws(static function (): void {
     (new ArgvParser([]))->requireOption('domain', '用 -d 指定');
-}, \PhpAcme\Exception\ConfigException::class, '缺必填参数应当报错并给出提示');
+}, \Mci\Acme\Exception\ConfigException::class, '缺必填参数应当报错并给出提示');
 
 // ---------------------------------------------------------------- 端到端跑 CLI
 
 $t->group('CLI 进程');
 
-$binary = __DIR__ . '/../bin/php-acme';
+$binary = __DIR__ . '/../bin/mci-acme';
 $home = test_temp_dir('cli');
 
 /**
@@ -90,7 +90,7 @@ function runCli(string $binary, string $home, array $arguments): array
 
 $version = runCli($binary, $home, ['--version']);
 $t->equals(0, $version['code'], '--version 应当成功退出');
-$t->contains('php-acme', $version['out'], '应当打印版本号');
+$t->contains('mci-acme', $version['out'], '应当打印版本号');
 
 $help = runCli($binary, $home, []);
 $t->equals(Application::EXIT_USAGE, $help['code'], '不给命令时应当返回用法错误码（脚本可据此区分）');

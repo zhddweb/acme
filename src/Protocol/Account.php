@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Protocol;
+namespace Mci\Acme\Protocol;
 
-use PhpAcme\Crypto\KeyPair;
+use Mci\Acme\Crypto\KeyPair;
 
 /**
  * ACME 账户。

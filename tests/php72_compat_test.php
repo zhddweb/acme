@@ -18,7 +18,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('PHP 7.2 语法兼容性');
 
@@ -354,7 +354,7 @@ foreach ($directory as $file) {
 }
 
 $files[] = __DIR__ . '/../bootstrap.php';
-$files[] = __DIR__ . '/../bin/php-acme';
+$files[] = __DIR__ . '/../bin/mci-acme';
 
 sort($files, SORT_STRING);
 
@@ -380,7 +380,7 @@ $t->group('最低版本声明一致');
 $composer = json_decode((string) file_get_contents(__DIR__ . '/../composer.json'), true);
 $t->equals('>=7.2', $composer['require']['php'], 'composer.json 里的 PHP 版本要求');
 
-$binary = (string) file_get_contents(__DIR__ . '/../bin/php-acme');
+$binary = (string) file_get_contents(__DIR__ . '/../bin/mci-acme');
 $t->contains("'7.2.0'", $binary, 'CLI 入口的版本检查应当与 composer.json 一致');
 
 exit($t->summary());

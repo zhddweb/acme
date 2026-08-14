@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Acme;
-use PhpAcme\Challenge\AbstractSolver;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Tests\FakeAcmeServer;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Challenge\AbstractSolver;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Tests\FakeAcmeServer;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Logger;
 
 $t = new Runner('续期流程');
 
@@ -126,7 +126,7 @@ mkdir($brokenBase, 0700, true);
 // 造一个有证书文件但没有 .conf 的目录：模拟手工拷贝进来的证书
 file_put_contents(
     $brokenBase . '/broken.example.com.cer',
-    \PhpAcme\Crypto\SelfSignedCertificate::forPlaceholder(KeyPair::generate('ec-256'), ['broken.example.com'], 86400)
+    \Mci\Acme\Crypto\SelfSignedCertificate::forPlaceholder(KeyPair::generate('ec-256'), ['broken.example.com'], 86400)
 );
 
 $outcomesWithBroken = $acme->renewAll();

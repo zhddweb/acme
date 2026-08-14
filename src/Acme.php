@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme;
+namespace Mci\Acme;
 
-use PhpAcme\Challenge\ChallengeSolverInterface;
-use PhpAcme\Deploy\DeployHookInterface;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Notify\NotifierInterface;
-use PhpAcme\Service\AccountService;
-use PhpAcme\Service\CertificateIssuer;
-use PhpAcme\Service\IssueRequest;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Service\RenewalService;
-use PhpAcme\Service\RevocationService;
-use PhpAcme\Service\SolverFactory;
-use PhpAcme\Storage\AccountStorage;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Storage\ConfigFile;
-use PhpAcme\Storage\Paths;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\ChallengeSolverInterface;
+use Mci\Acme\Deploy\DeployHookInterface;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Notify\NotifierInterface;
+use Mci\Acme\Service\AccountService;
+use Mci\Acme\Service\CertificateIssuer;
+use Mci\Acme\Service\IssueRequest;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Service\RenewalService;
+use Mci\Acme\Service\RevocationService;
+use Mci\Acme\Service\SolverFactory;
+use Mci\Acme\Storage\AccountStorage;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Storage\ConfigFile;
+use Mci\Acme\Storage\Paths;
+use Mci\Acme\Util\Logger;
 
 /**
  * 门面：在自己的代码里用这个库时，从这里开始。

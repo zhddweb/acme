@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Crypto;
+namespace Mci\Acme\Crypto;
 
-use PhpAcme\Asn1\Der;
-use PhpAcme\Asn1\Oid;
-use PhpAcme\Util\Domain;
+use Mci\Acme\Asn1\Der;
+use Mci\Acme\Asn1\Oid;
+use Mci\Acme\Util\Domain;
 
 /**
  * 自签 X.509 证书生成，专供 tls-alpn-01 使用。

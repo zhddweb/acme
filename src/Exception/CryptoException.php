@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Exception;
+namespace Mci\Acme\Exception;
 
 /**
  * 密钥、签名、编解码相关的失败。

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01\Provider;
+namespace Mci\Acme\Challenge\Dns01\Provider;
 
-use PhpAcme\Challenge\Dns01\AbstractDnsProvider;
+use Mci\Acme\Challenge\Dns01\AbstractDnsProvider;
 
 /**
  * Linode DNS v4（acme.sh 里的 dns_linode_v4）。
@@ -28,7 +28,7 @@ class Linode extends AbstractDnsProvider
         // Linode 用 X-Filter 头传查询条件，不是查询串
         $data = $this->requestJson('GET', self::API . '/domains', null, array_merge(
             $this->authHeaders(),
-            ['X-Filter' => \PhpAcme\Util\Json::encode(['domain' => $domain])]
+            ['X-Filter' => \Mci\Acme\Util\Json::encode(['domain' => $domain])]
         ));
 
         if (!isset($data['data']) || !\is_array($data['data'])) {

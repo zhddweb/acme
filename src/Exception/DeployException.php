@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Exception;
+namespace Mci\Acme\Exception;
 
 /**
  * 部署或通知钩子执行失败。

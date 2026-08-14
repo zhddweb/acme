@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Protocol;
+namespace Mci\Acme\Protocol;
 
-use PhpAcme\Exception\ProtocolException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Http\Response;
+use Mci\Acme\Exception\ProtocolException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Http\Response;
 
 /**
  * nonce 池。

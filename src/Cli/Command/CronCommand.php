@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Util\Logger;
 
 /**
  * 定时续期的帮助命令。
@@ -31,11 +31,11 @@ class CronCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme cron [--systemd] [--log <文件>]',
+            '用法：mci-acme cron [--systemd] [--log <文件>]',
             '',
             '选项：',
             '  --systemd    输出 systemd timer 的配置而不是 crontab 行',
-            '  --log <文件> 日志文件路径，默认 /var/log/php-acme.log',
+            '  --log <文件> 日志文件路径，默认 /var/log/mci-acme.log',
             '',
             '这个命令只负责**打印**该怎么配，不会去改你的 crontab——',
             '改 crontab 需要执行外部命令，而本库的设计前提就是不执行任何外部进程。',
@@ -47,7 +47,7 @@ class CronCommand implements CommandInterface
     {
         $binary = $this->resolveBinary();
         $php = PHP_BINARY !== '' ? PHP_BINARY : 'php';
-        $logFile = (string) $args->get('log', '/var/log/php-acme.log');
+        $logFile = (string) $args->get('log', '/var/log/mci-acme.log');
         $home = $acme->getPaths()->getBaseDir();
 
         if ($args->getFlag('systemd')) {
@@ -72,7 +72,7 @@ class CronCommand implements CommandInterface
         $logger->write('把下面这行加进 crontab（crontab -e）：');
         $logger->write('');
         $logger->write(sprintf(
-            '%d %d * * * PHP_ACME_CONFIG_HOME=%s %s %s renew-all --log %s',
+            '%d %d * * * MCI_ACME_CONFIG_HOME=%s %s %s renew-all --log %s',
             $minute,
             $hour,
             $home,
@@ -90,20 +90,20 @@ class CronCommand implements CommandInterface
 
     private function printSystemd(Logger $logger, string $php, string $binary, string $logFile, string $home): void
     {
-        $logger->write('创建 /etc/systemd/system/php-acme.service：');
+        $logger->write('创建 /etc/systemd/system/mci-acme.service：');
         $logger->write('');
         $logger->write(implode("\n", [
             '[Unit]',
-            'Description=php-acme 证书续期',
+            'Description=mci-acme 证书续期',
             'After=network-online.target',
             '',
             '[Service]',
             'Type=oneshot',
-            sprintf('Environment=PHP_ACME_CONFIG_HOME=%s', $home),
+            sprintf('Environment=MCI_ACME_CONFIG_HOME=%s', $home),
             sprintf('ExecStart=%s %s renew-all --log %s', $php, $binary, $logFile),
         ]));
         $logger->write('');
-        $logger->write('创建 /etc/systemd/system/php-acme.timer：');
+        $logger->write('创建 /etc/systemd/system/mci-acme.timer：');
         $logger->write('');
         $logger->write(implode("\n", [
             '[Unit]',
@@ -119,7 +119,7 @@ class CronCommand implements CommandInterface
             'WantedBy=timers.target',
         ]));
         $logger->write('');
-        $logger->write('然后启用：systemctl enable --now php-acme.timer');
+        $logger->write('然后启用：systemctl enable --now mci-acme.timer');
     }
 
     private function printEnvironmentCheck(Logger $logger): void
@@ -153,6 +153,6 @@ class CronCommand implements CommandInterface
             }
         }
 
-        return 'php-acme';
+        return 'mci-acme';
     }
 }

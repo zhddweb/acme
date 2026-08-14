@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Deploy\Hook;
+namespace Mci\Acme\Deploy\Hook;
 
-use PhpAcme\Deploy\DeployHookInterface;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Json;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Deploy\DeployHookInterface;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Json;
+use Mci\Acme\Util\Logger;
 
 /**
  * 写一个「证书更新了」的标记文件，把重载交给外部。
@@ -22,7 +22,7 @@ use PhpAcme\Util\Logger;
  *
  *     # /etc/systemd/system/cert-reload.path
  *     [Path]
- *     PathChanged=/run/php-acme/renewed.json
+ *     PathChanged=/run/mci-acme/renewed.json
  *     [Install]
  *     WantedBy=multi-user.target
  *

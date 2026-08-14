@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01;
+namespace Mci\Acme\Challenge\Dns01;
 
-use PhpAcme\Util\DnsResolver;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Util\DnsResolver;
+use Mci\Acme\Util\Logger;
 
 /**
  * 等 TXT 记录传播开。

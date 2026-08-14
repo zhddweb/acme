@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Notify\Hook;
+namespace Mci\Acme\Notify\Hook;
 
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Notify\NotifierInterface;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Notify\NotifierInterface;
+use Mci\Acme\Util\Logger;
 
 /**
  * 企业微信群机器人。

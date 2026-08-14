@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Asn1\Der;
-use PhpAcme\Asn1\DerParser;
-use PhpAcme\Asn1\Oid;
-use PhpAcme\Exception\CryptoException;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Asn1\Der;
+use Mci\Acme\Asn1\DerParser;
+use Mci\Acme\Asn1\Oid;
+use Mci\Acme\Exception\CryptoException;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('ASN.1 DER 编解码');
 

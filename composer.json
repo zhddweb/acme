@@ -56,7 +56,7 @@
     },
     "autoload": {
         "psr-4": {
-            "PhpAcme\\": "src/"
+            "Mci\\Acme\\": "src/"
         },
         "files": [
             "src/polyfill.php"
@@ -64,11 +64,11 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "PhpAcme\\Tests\\": "tests/lib/"
+            "Mci\\Acme\\Tests\\": "tests/lib/"
         }
     },
     "bin": [
-        "bin/php-acme"
+        "bin/mci-acme"
     ],
     "config": {
         "sort-packages": true,

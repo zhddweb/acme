@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Notify;
+namespace Mci\Acme\Notify;
 
 /**
  * 通知渠道。

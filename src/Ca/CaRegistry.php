@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Ca;
+namespace Mci\Acme\Ca;
 
-use PhpAcme\Exception\ConfigException;
+use Mci\Acme\Exception\ConfigException;
 
 /**
  * 内置 CA 列表。

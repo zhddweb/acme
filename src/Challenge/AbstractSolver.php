@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge;
+namespace Mci\Acme\Challenge;
 
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Util\Logger;
 
 /**
  * 求解器的公共部分：日志、以及 tick/verify 的默认实现。

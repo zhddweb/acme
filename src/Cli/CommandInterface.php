@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli;
+namespace Mci\Acme\Cli;
 
-use PhpAcme\Acme;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Util\Logger;
 
 /**
  * 一个 CLI 子命令。
@@ -26,7 +26,7 @@ interface CommandInterface
     /** 一行说明，出现在 help 列表里 */
     public function getSummary(): string;
 
-    /** 详细用法，`php-acme help <命令>` 时打印 */
+    /** 详细用法，`mci-acme help <命令>` 时打印 */
     public function getUsage(): string;
 
     /**

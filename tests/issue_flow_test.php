@@ -12,22 +12,22 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Challenge\AbstractSolver;
-use PhpAcme\Crypto\Certificate;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ChallengeException;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Service\AccountService;
-use PhpAcme\Service\CertificateIssuer;
-use PhpAcme\Service\IssueRequest;
-use PhpAcme\Storage\AccountStorage;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Storage\Paths;
-use PhpAcme\Tests\FakeAcmeServer;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\AbstractSolver;
+use Mci\Acme\Crypto\Certificate;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ChallengeException;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Service\AccountService;
+use Mci\Acme\Service\CertificateIssuer;
+use Mci\Acme\Service\IssueRequest;
+use Mci\Acme\Storage\AccountStorage;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Storage\Paths;
+use Mci\Acme\Tests\FakeAcmeServer;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Logger;
 
 $t = new Runner('端到端签发流程');
 
@@ -346,7 +346,7 @@ $t->throws(
 $envEab2 = buildIssuer($eabServer);
 $requestEab = new IssueRequest(['eab2.example.com'], new RecordingSolver('http-01'));
 $requestEab->setCa($eabServer->getDirectoryUrl());
-$requestEab->setEab(['kid' => 'test-kid', 'hmac' => \PhpAcme\Crypto\Base64Url::encode('test-hmac-key-bytes')]);
+$requestEab->setEab(['kid' => 'test-kid', 'hmac' => \Mci\Acme\Crypto\Base64Url::encode('test-hmac-key-bytes')]);
 
 $t->noThrow(
     static function () use ($envEab2, $requestEab): void {

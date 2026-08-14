@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Crypto\SelfSignedCertificate;
-use PhpAcme\Deploy\Hook\InstallFilesHook;
-use PhpAcme\Deploy\Hook\Pkcs12Hook;
-use PhpAcme\Deploy\Hook\ReloadSignalHook;
-use PhpAcme\Deploy\Hook\TouchFileHook;
-use PhpAcme\Deploy\Hook\WebhookDeployHook;
-use PhpAcme\Exception\DeployException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Http\Response;
-use PhpAcme\Http\Transport\MockTransport;
-use PhpAcme\Notify\Hook\DingTalkNotifier;
-use PhpAcme\Notify\Hook\TelegramNotifier;
-use PhpAcme\Notify\Hook\WebhookNotifier;
-use PhpAcme\Notify\NotifierChain;
-use PhpAcme\Notify\NotifierInterface;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Json;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Crypto\SelfSignedCertificate;
+use Mci\Acme\Deploy\Hook\InstallFilesHook;
+use Mci\Acme\Deploy\Hook\Pkcs12Hook;
+use Mci\Acme\Deploy\Hook\ReloadSignalHook;
+use Mci\Acme\Deploy\Hook\TouchFileHook;
+use Mci\Acme\Deploy\Hook\WebhookDeployHook;
+use Mci\Acme\Exception\DeployException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Http\Transport\MockTransport;
+use Mci\Acme\Notify\Hook\DingTalkNotifier;
+use Mci\Acme\Notify\Hook\TelegramNotifier;
+use Mci\Acme\Notify\Hook\WebhookNotifier;
+use Mci\Acme\Notify\NotifierChain;
+use Mci\Acme\Notify\NotifierInterface;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Json;
 
 $t = new Runner('部署与通知');
 
@@ -43,7 +43,7 @@ $result = new IssueResult(
     false,
     'example.com',
     ['example.com'],
-    \PhpAcme\Crypto\Certificate::fromPem($certificatePem),
+    \Mci\Acme\Crypto\Certificate::fromPem($certificatePem),
     [
         'key' => $sourceDir . '/example.com.key',
         'cert' => $sourceDir . '/example.com.cer',
@@ -201,7 +201,7 @@ $t->group('通知失败不能抛异常');
 
 $failTransport = new MockTransport();
 $failTransport->setFallback(static function (): Response {
-    throw new \PhpAcme\Exception\HttpException('网络不通');
+    throw new \Mci\Acme\Exception\HttpException('网络不通');
 });
 
 $failNotifier = new WebhookNotifier('https://notify.test/hook', [], new HttpClient($failTransport));

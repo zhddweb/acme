@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Service;
+namespace Mci\Acme\Service;
 
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Challenge\ChallengeSolverInterface;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Util\Domain;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Challenge\ChallengeSolverInterface;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Util\Domain;
 
 /**
  * 一次签发请求的全部参数。

@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Deploy\Hook;
+namespace Mci\Acme\Deploy\Hook;
 
-use PhpAcme\Deploy\DeployHookInterface;
-use PhpAcme\Exception\DeployException;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Deploy\DeployHookInterface;
+use Mci\Acme\Exception\DeployException;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Logger;
 
 /**
  * 把证书文件安装到指定路径（对应 acme.sh 的 --install-cert）。
  *
- * 为什么不让用户直接引用 ~/.php-acme 下的原始文件：
+ * 为什么不让用户直接引用 ~/.mci-acme 下的原始文件：
  *
  * 1. 那个目录权限是 0700，nginx 的 worker 用户读不到；
  * 2. 续期时原文件会被替换，某些服务持有的是 inode 而不是路径；

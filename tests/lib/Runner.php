@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Tests;
+namespace Mci\Acme\Tests;
 
 /**
  * 极简测试运行器。

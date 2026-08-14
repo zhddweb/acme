@@ -1,4 +1,4 @@
-# php-acme 项目约束
+# mci-acme 项目约束
 
 ## 这个库是做什么的
 
@@ -32,15 +32,15 @@ acme.sh 是 shell 脚本，依赖 `openssl` 命令行、`curl`、`crontab`、`se
 - **DNS 提供商**：`src/Challenge/Dns01/Provider/` 下一家一个类，见下节
 - **部署**：`src/Deploy/Hook/`，安装到 nginx/apache 路径、导出 PKCS#12 等
 - **通知**：`src/Notify/Hook/`，签发/续期/失败时推送
-- **CLI**：`bin/php-acme`，命令与 acme.sh 对齐（`--issue`、`--renew`、`--revoke` …）
-- **库调用**：`PhpAcme\Acme` 门面类，不用 CLI 也能在业务代码里直接签发
+- **CLI**：`bin/mci-acme`，命令与 acme.sh 对齐（`--issue`、`--renew`、`--revoke` …）
+- **库调用**：`Mci\Acme\Acme` 门面类，不用 CLI 也能在业务代码里直接签发
 
 ### 目录布局
 
-证书与账户默认存在 `~/.php-acme/`，结构照抄 acme.sh，方便双向迁移：
+证书与账户默认存在 `~/.mci-acme/`，结构照抄 acme.sh，方便双向迁移：
 
 ```
-~/.php-acme/
+~/.mci-acme/
   account.conf              # 全局配置
   ca/<ca-host>/<dir>/       # 每个 CA 一份账户密钥 + account.json
   <domain>[_ecc]/           # 每个证书一个目录

@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ProtocolException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Http\Response;
-use PhpAcme\Http\Transport\MockTransport;
-use PhpAcme\Protocol\AcmeClient;
-use PhpAcme\Protocol\Authorization;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Protocol\Directory;
-use PhpAcme\Protocol\NonceManager;
-use PhpAcme\Protocol\Order;
-use PhpAcme\Tests\FakeAcmeServer;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Json;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ProtocolException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Http\Transport\MockTransport;
+use Mci\Acme\Protocol\AcmeClient;
+use Mci\Acme\Protocol\Authorization;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Protocol\Directory;
+use Mci\Acme\Protocol\NonceManager;
+use Mci\Acme\Protocol\Order;
+use Mci\Acme\Tests\FakeAcmeServer;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Json;
 
 $t = new Runner('ACME 协议层');
 
@@ -177,14 +177,14 @@ $t->contains('404', $failedChallenge->getErrorMessage(), '失败原因是排错�
 
 $t->group('账户联系方式');
 
-$t->equals(['mailto:a@b.com'], \PhpAcme\Protocol\Account::buildContacts('a@b.com'), '单个邮箱');
+$t->equals(['mailto:a@b.com'], \Mci\Acme\Protocol\Account::buildContacts('a@b.com'), '单个邮箱');
 $t->equals(
     ['mailto:a@b.com', 'mailto:c@d.com'],
-    \PhpAcme\Protocol\Account::buildContacts('a@b.com,c@d.com'),
+    \Mci\Acme\Protocol\Account::buildContacts('a@b.com,c@d.com'),
     '逗号分隔的多个邮箱'
 );
-$t->equals(['mailto:a@b.com'], \PhpAcme\Protocol\Account::buildContacts('mailto:a@b.com'), '已经带 mailto: 的不该套两层');
-$t->equals([], \PhpAcme\Protocol\Account::buildContacts(''), '空串');
+$t->equals(['mailto:a@b.com'], \Mci\Acme\Protocol\Account::buildContacts('mailto:a@b.com'), '已经带 mailto: 的不该套两层');
+$t->equals([], \Mci\Acme\Protocol\Account::buildContacts(''), '空串');
 
 $t->group('对着模拟服务端跑协议方法');
 

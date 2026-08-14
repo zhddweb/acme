@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Http;
+namespace Mci\Acme\Http;
 
 /**
  * 一次待发出的 HTTP 请求。

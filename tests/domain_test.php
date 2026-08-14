@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Domain;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Domain;
 
 $t = new Runner('域名处理');
 

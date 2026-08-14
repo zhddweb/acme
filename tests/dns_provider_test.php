@@ -15,21 +15,21 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Challenge\Dns01\Provider\AliyunDns;
-use PhpAcme\Challenge\Dns01\Provider\Cloudflare;
-use PhpAcme\Challenge\Dns01\Provider\DnsPod;
-use PhpAcme\Challenge\Dns01\Provider\GoDaddy;
-use PhpAcme\Challenge\Dns01\Provider\Route53;
-use PhpAcme\Challenge\Dns01\Provider\TencentCloud;
-use PhpAcme\Challenge\Dns01\ProviderFactory;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Exception\DnsException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Http\Request;
-use PhpAcme\Http\Response;
-use PhpAcme\Http\Transport\MockTransport;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Json;
+use Mci\Acme\Challenge\Dns01\Provider\AliyunDns;
+use Mci\Acme\Challenge\Dns01\Provider\Cloudflare;
+use Mci\Acme\Challenge\Dns01\Provider\DnsPod;
+use Mci\Acme\Challenge\Dns01\Provider\GoDaddy;
+use Mci\Acme\Challenge\Dns01\Provider\Route53;
+use Mci\Acme\Challenge\Dns01\Provider\TencentCloud;
+use Mci\Acme\Challenge\Dns01\ProviderFactory;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Exception\DnsException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Http\Request;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Http\Transport\MockTransport;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Json;
 
 $t = new Runner('DNS 提供商');
 
@@ -178,7 +178,7 @@ parse_str((string) $dpRequest->getBody(), $dpParams);
 $t->equals('12345,secret', $dpParams['login_token'], 'DNSPod 的令牌是 ID,Key 的形式');
 $t->equals('domain-9', $dpParams['domain_id'], '应当先查出 domain id');
 $t->equals('_acme-challenge', $dpParams['sub_domain'], '记录名');
-$t->contains('php-acme', (string) $dpRequest->getHeader('User-Agent'), 'DNSPod 强制要求带 UA');
+$t->contains('mci-acme', (string) $dpRequest->getHeader('User-Agent'), 'DNSPod 强制要求带 UA');
 
 $t->group('DNSPod 的业务错误');
 

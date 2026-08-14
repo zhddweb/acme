@@ -1,4 +1,4 @@
-# php-acme
+# mci-acme
 
 用**原生 PHP** 实现的 ACME v2（RFC 8555）证书客户端 —— [acme.sh](https://github.com/acmesh-official/acme.sh) 的功能对等实现。
 
@@ -17,9 +17,9 @@ acme.sh 很好用，但它是 shell 脚本，依赖 `openssl` 命令行、`curl`
   连 shell 都进不去，更别说跑脚本。
 - **受管控的容器与 PaaS**：只给一个 PHP 运行时，没有 crontab，文件系统只读一半。
 
-php-acme 把这些依赖全部换成 PHP 自己的能力：
+mci-acme 把这些依赖全部换成 PHP 自己的能力：
 
-| acme.sh 依赖 | php-acme 的做法 |
+| acme.sh 依赖 | mci-acme 的做法 |
 |---|---|
 | `openssl genrsa` / `ecparam` | `ext-openssl` 的 `openssl_pkey_new()` |
 | `openssl req -new`（要配 openssl.cnf 才能写 SAN） | 自己用 ASN.1 DER 编码器拼 CSR，**不碰配置文件** |
@@ -42,7 +42,7 @@ composer require likun-mci/acme
 
 ```bash
 git clone https://github.com/likun-mci/acme.git
-php acme/bin/php-acme --version
+php acme/bin/mci-acme --version
 ```
 
 **要求**：PHP >= 7.2，`ext-openssl`、`ext-json`、`ext-mbstring`。
@@ -54,17 +54,17 @@ php acme/bin/php-acme --version
 
 ```bash
 # 用网站根目录验证（最常用）
-php-acme issue -d example.com -d www.example.com -w /var/www/html
+mci-acme issue -d example.com -d www.example.com -w /var/www/html
 
 # 用 DNS 验证，可以签通配符
 export CF_Token=你的-Cloudflare-令牌
-php-acme issue -d example.com -d "*.example.com" --dns dns_cf
+mci-acme issue -d example.com -d "*.example.com" --dns dns_cf
 
 # 机器上没跑 web 服务时，临时占用 80 端口自己应答
-php-acme issue -d example.com --standalone
+mci-acme issue -d example.com --standalone
 
 # 换 CA、换密钥类型
-php-acme issue -d example.com -w /var/www/html --ca zerossl -m you@example.com -k ec-384
+mci-acme issue -d example.com -w /var/www/html --ca zerossl -m you@example.com -k ec-384
 ```
 
 > **调试时请用 staging**：`--ca letsencrypt_test`。正式环境每组域名每周只能签 5 张，
@@ -73,7 +73,7 @@ php-acme issue -d example.com -w /var/www/html --ca zerossl -m you@example.com -
 ### 安装到服务并自动重载
 
 ```bash
-php-acme install-cert -d example.com \
+mci-acme install-cert -d example.com \
     --key-file /etc/nginx/ssl/example.com.key \
     --fullchain-file /etc/nginx/ssl/example.com.crt \
     --reload-service nginx
@@ -87,7 +87,7 @@ php-acme install-cert -d example.com \
 没有 `ext-posix` 或者服务不在本机时，改用标记文件：
 
 ```bash
-php-acme install-cert -d example.com --key-file ... --touch-file /run/php-acme/renewed.json
+mci-acme install-cert -d example.com --key-file ... --touch-file /run/mci-acme/renewed.json
 ```
 
 配一个 systemd path unit 监听那个文件，由它去执行 `systemctl reload nginx`。
@@ -95,10 +95,10 @@ php-acme install-cert -d example.com --key-file ... --touch-file /run/php-acme/r
 ### 续期
 
 ```bash
-php-acme renew -d example.com          # 单张
-php-acme renew-all                     # 全部（cron 里跑这个）
-php-acme cron                          # 打印该加的 crontab 行
-php-acme cron --systemd                # 或者输出 systemd timer 配置
+mci-acme renew -d example.com          # 单张
+mci-acme renew-all                     # 全部（cron 里跑这个）
+mci-acme cron                          # 打印该加的 crontab 行
+mci-acme cron --systemd                # 或者输出 systemd timer 配置
 ```
 
 续期用的验证方式、CA、密钥类型、DNS 凭据都从证书目录的 `.conf` 读，不用重复指定。
@@ -107,19 +107,19 @@ php-acme cron --systemd                # 或者输出 systemd timer 配置
 ### 其他
 
 ```bash
-php-acme list                          # 列出所有证书与到期时间
-php-acme info -d example.com           # 看某张证书的详情
-php-acme revoke -d example.com --reason 4
-php-acme remove -d example.com         # 只删本地文件，证书仍有效
-php-acme account show                  # 看账户信息
-php-acme check-dns -d example.com      # 排查 dns-01：直接问权威 NS
-php-acme list-dns                      # 列出支持的 DNS 提供商与所需变量
+mci-acme list                          # 列出所有证书与到期时间
+mci-acme info -d example.com           # 看某张证书的详情
+mci-acme revoke -d example.com --reason 4
+mci-acme remove -d example.com         # 只删本地文件，证书仍有效
+mci-acme account show                  # 看账户信息
+mci-acme check-dns -d example.com      # 排查 dns-01：直接问权威 NS
+mci-acme list-dns                      # 列出支持的 DNS 提供商与所需变量
 ```
 
 acme.sh 风格的写法也能用，现有脚本改个程序名就行：
 
 ```bash
-php-acme --issue -d example.com -w /var/www/html --server letsencrypt_test
+mci-acme --issue -d example.com -w /var/www/html --server letsencrypt_test
 ```
 
 ## 作为库使用
@@ -127,8 +127,8 @@ php-acme --issue -d example.com -w /var/www/html --server letsencrypt_test
 ```php
 require 'vendor/autoload.php';
 
-use PhpAcme\Acme;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Util\Logger;
 
 $acme = new Acme(null, new Logger(Logger::LEVEL_INFO, STDOUT));
 
@@ -150,7 +150,7 @@ if ($result->isIssued()) {
 
 ```php
 // 只想生成一个带 SAN 的 CSR，不走 openssl.cnf
-use PhpAcme\Crypto\{KeyPair, Csr};
+use Mci\Acme\Crypto\{KeyPair, Csr};
 
 $key = KeyPair::generate('ec-256');
 $csr = Csr::createPem($key, ['example.com', '*.example.com']);
@@ -200,10 +200,10 @@ $csr = Csr::createPem($key, ['example.com', '*.example.com']);
 
 ## 文件布局
 
-默认在 `~/.php-acme/`，结构照抄 acme.sh，两边可以互相迁移：
+默认在 `~/.mci-acme/`，结构照抄 acme.sh，两边可以互相迁移：
 
 ```
-~/.php-acme/
+~/.mci-acme/
   account.conf                    全局配置
   ca/<host>/<path>/
     account.key                   账户私钥（0600）

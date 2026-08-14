@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Service;
+namespace Mci\Acme\Service;
 
-use PhpAcme\Ca\CaRegistry;
-use PhpAcme\Ca\Eab;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Protocol\Account;
-use PhpAcme\Protocol\AcmeClient;
-use PhpAcme\Storage\AccountStorage;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Ca\CaRegistry;
+use Mci\Acme\Ca\Eab;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Protocol\Account;
+use Mci\Acme\Protocol\AcmeClient;
+use Mci\Acme\Storage\AccountStorage;
+use Mci\Acme\Util\Logger;
 
 /**
  * 账户的取用与维护。

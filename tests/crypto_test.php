@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Crypto\Base64Url;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\CryptoException;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Json;
+use Mci\Acme\Crypto\Base64Url;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\CryptoException;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Json;
 
 $t = new Runner('密钥与 JWK');
 

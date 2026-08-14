@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Dns01\Provider;
+namespace Mci\Acme\Challenge\Dns01\Provider;
 
-use PhpAcme\Challenge\Dns01\DnsProviderInterface;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\Dns01\DnsProviderInterface;
+use Mci\Acme\Util\Logger;
 
 /**
  * 手动 DNS：把要加的记录打印出来，由用户自己去解析商后台操作。

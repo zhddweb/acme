@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Crypto\Base64Url;
-use PhpAcme\Exception\CryptoException;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Crypto\Base64Url;
+use Mci\Acme\Exception\CryptoException;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('base64url');
 

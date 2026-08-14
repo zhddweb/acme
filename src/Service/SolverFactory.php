@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Service;
+namespace Mci\Acme\Service;
 
-use PhpAcme\Challenge\ChallengeSolverInterface;
-use PhpAcme\Challenge\Dns01\DnsSolver;
-use PhpAcme\Challenge\Dns01\DnsVerifier;
-use PhpAcme\Challenge\Dns01\ProviderFactory;
-use PhpAcme\Challenge\Http01\ManualSolver;
-use PhpAcme\Challenge\Http01\StandaloneSolver;
-use PhpAcme\Challenge\Http01\WebrootSolver;
-use PhpAcme\Challenge\TlsAlpn01\TlsAlpnSolver;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Http\HttpClient;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\ChallengeSolverInterface;
+use Mci\Acme\Challenge\Dns01\DnsSolver;
+use Mci\Acme\Challenge\Dns01\DnsVerifier;
+use Mci\Acme\Challenge\Dns01\ProviderFactory;
+use Mci\Acme\Challenge\Http01\ManualSolver;
+use Mci\Acme\Challenge\Http01\StandaloneSolver;
+use Mci\Acme\Challenge\Http01\WebrootSolver;
+use Mci\Acme\Challenge\TlsAlpn01\TlsAlpnSolver;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Http\HttpClient;
+use Mci\Acme\Util\Logger;
 
 /**
  * 按一个字符串创建求解器。

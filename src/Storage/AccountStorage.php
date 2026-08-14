@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Storage;
+namespace Mci\Acme\Storage;
 
-use PhpAcme\Ca\Eab;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\StorageException;
-use PhpAcme\Protocol\Account;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Json;
+use Mci\Acme\Ca\Eab;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\StorageException;
+use Mci\Acme\Protocol\Account;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Json;
 
 /**
  * 账户密钥与元数据的落盘。

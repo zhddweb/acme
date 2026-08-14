@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Util\Logger;
 
 /**
  * 续期单张证书，参数从 .conf 里读回来。
@@ -28,7 +28,7 @@ class RenewCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme renew -d <域名> [选项]',
+            '用法：mci-acme renew -d <域名> [选项]',
             '',
             '选项：',
             '  -d, --domain <域名>   要续期的主域名（就是签发时的第一个域名）',

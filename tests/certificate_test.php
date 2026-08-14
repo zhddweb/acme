@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Crypto\Certificate;
-use PhpAcme\Crypto\Jws;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Crypto\SelfSignedCertificate;
-use PhpAcme\Exception\CryptoException;
-use PhpAcme\Tests\Runner;
+use Mci\Acme\Crypto\Certificate;
+use Mci\Acme\Crypto\Jws;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Crypto\SelfSignedCertificate;
+use Mci\Acme\Exception\CryptoException;
+use Mci\Acme\Tests\Runner;
 
 $t = new Runner('证书解析与自签');
 

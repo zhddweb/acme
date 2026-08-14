@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Util;
+namespace Mci\Acme\Util;
 
-use PhpAcme\Exception\AcmeException;
+use Mci\Acme\Exception\AcmeException;
 
 /**
  * JSON 编解码的统一入口。

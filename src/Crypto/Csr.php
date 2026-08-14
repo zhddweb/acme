@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Crypto;
+namespace Mci\Acme\Crypto;
 
-use PhpAcme\Asn1\Der;
-use PhpAcme\Asn1\Oid;
-use PhpAcme\Exception\CryptoException;
-use PhpAcme\Util\Domain;
+use Mci\Acme\Asn1\Der;
+use Mci\Acme\Asn1\Oid;
+use Mci\Acme\Exception\CryptoException;
+use Mci\Acme\Util\Domain;
 
 /**
  * CSR（PKCS#10）生成。

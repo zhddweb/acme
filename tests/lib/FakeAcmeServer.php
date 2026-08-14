@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Tests;
+namespace Mci\Acme\Tests;
 
-use PhpAcme\Asn1\DerParser;
-use PhpAcme\Crypto\Base64Url;
-use PhpAcme\Crypto\Certificate;
-use PhpAcme\Crypto\Csr;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Crypto\SelfSignedCertificate;
-use PhpAcme\Http\Request;
-use PhpAcme\Http\Response;
-use PhpAcme\Http\Transport\MockTransport;
-use PhpAcme\Util\Json;
+use Mci\Acme\Asn1\DerParser;
+use Mci\Acme\Crypto\Base64Url;
+use Mci\Acme\Crypto\Certificate;
+use Mci\Acme\Crypto\Csr;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Crypto\SelfSignedCertificate;
+use Mci\Acme\Http\Request;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Http\Transport\MockTransport;
+use Mci\Acme\Util\Json;
 
 /**
  * 假的 ACME 服务端，跑在 MockTransport 之上。
@@ -366,9 +366,9 @@ class FakeAcmeServer
             }
 
             $curves = [
-                'P-256' => \PhpAcme\Asn1\Oid::PRIME256V1,
-                'P-384' => \PhpAcme\Asn1\Oid::SECP384R1,
-                'P-521' => \PhpAcme\Asn1\Oid::SECP521R1,
+                'P-256' => \Mci\Acme\Asn1\Oid::PRIME256V1,
+                'P-384' => \Mci\Acme\Asn1\Oid::SECP384R1,
+                'P-521' => \Mci\Acme\Asn1\Oid::SECP521R1,
             ];
 
             if (!isset($curves[$jwk['crv']])) {
@@ -377,12 +377,12 @@ class FakeAcmeServer
 
             $point = "\x04" . Base64Url::decode($jwk['x']) . Base64Url::decode($jwk['y']);
 
-            $spki = \PhpAcme\Asn1\Der::sequence(
-                \PhpAcme\Asn1\Der::sequence(
-                    \PhpAcme\Asn1\Der::oid(\PhpAcme\Asn1\Oid::EC_PUBLIC_KEY),
-                    \PhpAcme\Asn1\Der::oid($curves[$jwk['crv']])
+            $spki = \Mci\Acme\Asn1\Der::sequence(
+                \Mci\Acme\Asn1\Der::sequence(
+                    \Mci\Acme\Asn1\Der::oid(\Mci\Acme\Asn1\Oid::EC_PUBLIC_KEY),
+                    \Mci\Acme\Asn1\Der::oid($curves[$jwk['crv']])
                 ),
-                \PhpAcme\Asn1\Der::bitString($point)
+                \Mci\Acme\Asn1\Der::bitString($point)
             );
 
             return $this->derToPem($spki);
@@ -393,17 +393,17 @@ class FakeAcmeServer
                 return null;
             }
 
-            $rsaKey = \PhpAcme\Asn1\Der::sequence(
-                \PhpAcme\Asn1\Der::integer(Base64Url::decode($jwk['n'])),
-                \PhpAcme\Asn1\Der::integer(Base64Url::decode($jwk['e']))
+            $rsaKey = \Mci\Acme\Asn1\Der::sequence(
+                \Mci\Acme\Asn1\Der::integer(Base64Url::decode($jwk['n'])),
+                \Mci\Acme\Asn1\Der::integer(Base64Url::decode($jwk['e']))
             );
 
-            $spki = \PhpAcme\Asn1\Der::sequence(
-                \PhpAcme\Asn1\Der::algorithmIdentifier(
-                    \PhpAcme\Asn1\Oid::RSA_ENCRYPTION,
-                    \PhpAcme\Asn1\Der::null()
+            $spki = \Mci\Acme\Asn1\Der::sequence(
+                \Mci\Acme\Asn1\Der::algorithmIdentifier(
+                    \Mci\Acme\Asn1\Oid::RSA_ENCRYPTION,
+                    \Mci\Acme\Asn1\Der::null()
                 ),
-                \PhpAcme\Asn1\Der::bitString($rsaKey)
+                \Mci\Acme\Asn1\Der::bitString($rsaKey)
             );
 
             return $this->derToPem($spki);
@@ -800,7 +800,7 @@ class FakeAcmeServer
      */
     private function buildCertificate(string $spki, array $domains, int $lifetime): string
     {
-        $der = \PhpAcme\Asn1\Der::class;
+        $der = \Mci\Acme\Asn1\Der::class;
 
         $generalNames = [];
         foreach ($domains as $domain) {
@@ -809,14 +809,14 @@ class FakeAcmeServer
 
         $subject = $der::sequence(
             $der::set($der::sequence(
-                $der::oid(\PhpAcme\Asn1\Oid::COMMON_NAME),
+                $der::oid(\Mci\Acme\Asn1\Oid::COMMON_NAME),
                 $der::utf8String($domains[0])
             ))
         );
 
         $issuer = $der::sequence(
             $der::set($der::sequence(
-                $der::oid(\PhpAcme\Asn1\Oid::COMMON_NAME),
+                $der::oid(\Mci\Acme\Asn1\Oid::COMMON_NAME),
                 $der::utf8String('Fake ACME Test CA')
             ))
         );
@@ -837,7 +837,7 @@ class FakeAcmeServer
             $spki,
             $der::explicitContext(3, $der::sequence(
                 $der::sequence(
-                    $der::oid(\PhpAcme\Asn1\Oid::SUBJECT_ALT_NAME),
+                    $der::oid(\Mci\Acme\Asn1\Oid::SUBJECT_ALT_NAME),
                     $der::octetString($der::sequence(...$generalNames))
                 )
             ))

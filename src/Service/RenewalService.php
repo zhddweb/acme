@@ -2,20 +2,20 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Service;
+namespace Mci\Acme\Service;
 
-use PhpAcme\Challenge\Dns01\ProviderFactory;
-use PhpAcme\Deploy\DeployHookInterface;
-use PhpAcme\Deploy\Hook\InstallFilesHook;
-use PhpAcme\Deploy\Hook\Pkcs12Hook;
-use PhpAcme\Deploy\Hook\ReloadSignalHook;
-use PhpAcme\Deploy\Hook\TouchFileHook;
-use PhpAcme\Exception\AcmeException;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Notify\NotifierInterface;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Storage\ConfigFile;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\Dns01\ProviderFactory;
+use Mci\Acme\Deploy\DeployHookInterface;
+use Mci\Acme\Deploy\Hook\InstallFilesHook;
+use Mci\Acme\Deploy\Hook\Pkcs12Hook;
+use Mci\Acme\Deploy\Hook\ReloadSignalHook;
+use Mci\Acme\Deploy\Hook\TouchFileHook;
+use Mci\Acme\Exception\AcmeException;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Notify\NotifierInterface;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Storage\ConfigFile;
+use Mci\Acme\Util\Logger;
 
 /**
  * 续期：从 .conf 里读回上次的签发参数，原样再跑一遍。
@@ -239,7 +239,7 @@ class RenewalService
         ]);
 
         $request = new IssueRequest($domains, $solver);
-        $request->setCa($config->get(CertificateStorage::KEY_API, \PhpAcme\Ca\CaRegistry::DEFAULT_CA));
+        $request->setCa($config->get(CertificateStorage::KEY_API, \Mci\Acme\Ca\CaRegistry::DEFAULT_CA));
         $request->setRenewDays($config->getInt(CertificateStorage::KEY_RENEW_DAYS, 30));
         $request->setPreferredChain($config->get(CertificateStorage::KEY_PREFERRED_CHAIN));
 

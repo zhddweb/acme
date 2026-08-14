@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Http\Transport;
+namespace Mci\Acme\Http\Transport;
 
-use PhpAcme\Exception\HttpException;
-use PhpAcme\Http\Request;
-use PhpAcme\Http\Response;
-use PhpAcme\Util\Platform;
+use Mci\Acme\Exception\HttpException;
+use Mci\Acme\Http\Request;
+use Mci\Acme\Http\Response;
+use Mci\Acme\Util\Platform;
 
 /**
  * 基于 curl 扩展的实现，首选。

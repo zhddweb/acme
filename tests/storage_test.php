@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 require __DIR__ . '/lib/bootstrap.php';
 
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Crypto\SelfSignedCertificate;
-use PhpAcme\Exception\StorageException;
-use PhpAcme\Protocol\Account;
-use PhpAcme\Storage\AccountStorage;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Storage\Paths;
-use PhpAcme\Tests\Runner;
-use PhpAcme\Util\Filesystem;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Crypto\SelfSignedCertificate;
+use Mci\Acme\Exception\StorageException;
+use Mci\Acme\Protocol\Account;
+use Mci\Acme\Storage\AccountStorage;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Storage\Paths;
+use Mci\Acme\Tests\Runner;
+use Mci\Acme\Util\Filesystem;
 
 $t = new Runner('存储层');
 
@@ -175,7 +175,7 @@ $t->equals(['admin@example.com'], $loadedAccount->getEmails(), '联系邮箱');
 
 $t->group('EAB 凭据');
 
-$eab = new \PhpAcme\Ca\Eab('kid-1', 'aG1hYy1rZXk');
+$eab = new \Mci\Acme\Ca\Eab('kid-1', 'aG1hYy1rZXk');
 $accountStorage->saveEab($directoryUrl, $eab);
 
 $loadedEab = $accountStorage->loadEab($directoryUrl);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Util;
+namespace Mci\Acme\Util;
 
 /**
  * 运行环境探测。
@@ -102,7 +102,7 @@ final class Platform
      */
     public static function homeDirectory(): string
     {
-        $home = getenv('PHP_ACME_HOME');
+        $home = getenv('MCI_ACME_HOME');
         if (\is_string($home) && $home !== '') {
             return rtrim($home, '/\\');
         }

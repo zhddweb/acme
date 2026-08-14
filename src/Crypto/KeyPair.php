@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Crypto;
+namespace Mci\Acme\Crypto;
 
-use PhpAcme\Asn1\DerParser;
-use PhpAcme\Exception\CryptoException;
+use Mci\Acme\Asn1\DerParser;
+use Mci\Acme\Exception\CryptoException;
 
 /**
  * 一对非对称密钥，以及围绕它的签名、JWK、PEM 导入导出。
@@ -246,10 +246,10 @@ class KeyPair
     public function getSignatureOid(): string
     {
         $map = [
-            'RS256' => \PhpAcme\Asn1\Oid::SHA256_WITH_RSA,
-            'ES256' => \PhpAcme\Asn1\Oid::ECDSA_WITH_SHA256,
-            'ES384' => \PhpAcme\Asn1\Oid::ECDSA_WITH_SHA384,
-            'ES512' => \PhpAcme\Asn1\Oid::ECDSA_WITH_SHA512,
+            'RS256' => \Mci\Acme\Asn1\Oid::SHA256_WITH_RSA,
+            'ES256' => \Mci\Acme\Asn1\Oid::ECDSA_WITH_SHA256,
+            'ES384' => \Mci\Acme\Asn1\Oid::ECDSA_WITH_SHA384,
+            'ES512' => \Mci\Acme\Asn1\Oid::ECDSA_WITH_SHA512,
         ];
 
         return $map[$this->getSignatureAlgorithm()];
@@ -412,7 +412,7 @@ class KeyPair
      */
     public function getThumbprint(): string
     {
-        return Base64Url::encode(hash('sha256', \PhpAcme\Util\Json::encode($this->getJwk()), true));
+        return Base64Url::encode(hash('sha256', \Mci\Acme\Util\Json::encode($this->getJwk()), true));
     }
 
     /**

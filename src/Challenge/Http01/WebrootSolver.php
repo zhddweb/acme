@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Http01;
+namespace Mci\Acme\Challenge\Http01;
 
-use PhpAcme\Challenge\AbstractSolver;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Exception\ChallengeException;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Util\Domain;
-use PhpAcme\Util\Filesystem;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\AbstractSolver;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Exception\ChallengeException;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Util\Domain;
+use Mci\Acme\Util\Filesystem;
+use Mci\Acme\Util\Logger;
 
 /**
  * http-01：把答案写成 webroot 下的一个文件。

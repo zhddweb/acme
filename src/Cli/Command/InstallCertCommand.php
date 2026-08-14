@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli\Command;
+namespace Mci\Acme\Cli\Command;
 
-use PhpAcme\Acme;
-use PhpAcme\Cli\ArgvParser;
-use PhpAcme\Cli\CommandInterface;
-use PhpAcme\Deploy\Hook\InstallFilesHook;
-use PhpAcme\Deploy\Hook\Pkcs12Hook;
-use PhpAcme\Deploy\Hook\ReloadSignalHook;
-use PhpAcme\Deploy\Hook\TouchFileHook;
-use PhpAcme\Exception\ConfigException;
-use PhpAcme\Service\IssueResult;
-use PhpAcme\Storage\CertificateStorage;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Acme;
+use Mci\Acme\Cli\ArgvParser;
+use Mci\Acme\Cli\CommandInterface;
+use Mci\Acme\Deploy\Hook\InstallFilesHook;
+use Mci\Acme\Deploy\Hook\Pkcs12Hook;
+use Mci\Acme\Deploy\Hook\ReloadSignalHook;
+use Mci\Acme\Deploy\Hook\TouchFileHook;
+use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Service\IssueResult;
+use Mci\Acme\Storage\CertificateStorage;
+use Mci\Acme\Util\Logger;
 
 /**
  * 把证书安装到服务实际读取的位置，并记住这套配置供续期时自动重放。
@@ -38,7 +38,7 @@ class InstallCertCommand implements CommandInterface
     public function getUsage(): string
     {
         return implode("\n", [
-            '用法：php-acme install-cert -d <域名> [目标路径选项] [重载选项]',
+            '用法：mci-acme install-cert -d <域名> [目标路径选项] [重载选项]',
             '',
             '目标路径：',
             '      --key-file <路径>        私钥装到哪',
@@ -63,13 +63,13 @@ class InstallCertCommand implements CommandInterface
             '不用再手工执行。',
             '',
             '例子：',
-            '  php-acme install-cert -d example.com \\',
+            '  mci-acme install-cert -d example.com \\',
             '      --key-file /etc/nginx/ssl/example.com.key \\',
             '      --fullchain-file /etc/nginx/ssl/example.com.crt \\',
             '      --reload-service nginx',
             '',
             '没有 ext-posix 时改用标记文件，配合 systemd path unit：',
-            '  php-acme install-cert -d example.com --key-file ... --touch-file /run/php-acme/renewed.json',
+            '  mci-acme install-cert -d example.com --key-file ... --touch-file /run/mci-acme/renewed.json',
         ]);
     }
 

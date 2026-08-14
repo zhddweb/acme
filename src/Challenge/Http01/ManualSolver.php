@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Challenge\Http01;
+namespace Mci\Acme\Challenge\Http01;
 
-use PhpAcme\Challenge\AbstractSolver;
-use PhpAcme\Crypto\KeyPair;
-use PhpAcme\Protocol\Challenge;
-use PhpAcme\Util\Logger;
+use Mci\Acme\Challenge\AbstractSolver;
+use Mci\Acme\Crypto\KeyPair;
+use Mci\Acme\Protocol\Challenge;
+use Mci\Acme\Util\Logger;
 
 /**
  * 手动模式：把该做的事打印出来，让用户自己去做。

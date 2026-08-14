@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace PhpAcme\Cli;
+namespace Mci\Acme\Cli;
 
-use PhpAcme\Exception\ConfigException;
+use Mci\Acme\Exception\ConfigException;
 
 /**
  * 命令行参数解析。
