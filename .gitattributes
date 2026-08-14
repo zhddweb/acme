@@ -1,0 +1,22 @@
+# 仓库内一律用 LF 存储，检出时不改写；避免同一文件在不同机器上产生整文件级 diff
+* text=auto eol=lf
+
+*.php    text eol=lf
+*.md     text eol=lf
+*.json   text eol=lf
+*.yml    text eol=lf
+*.xml    text eol=lf
+.gitattributes text eol=lf
+.gitignore     text eol=lf
+
+# 打包进 dist 的 tarball 里没必要带上这些
+/tests          export-ignore
+/.github        export-ignore
+/.claude        export-ignore
+/.editorconfig  export-ignore
+/.gitattributes export-ignore
+
+*.png binary
+*.jpg binary
+*.zip binary
+*.p12 binary

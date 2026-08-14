@@ -1,0 +1,54 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+/**
+ * php-acme 的命令行入口。
+ *
+ * 两种安装方式都要能跑：
+ * - composer 装的：vendor/autoload.php 在上两级
+ * - 直接 clone / 解压的：用项目自带的 bootstrap.php
+ */
+
+$autoloaders = [
+    // composer 安装：vendor/likun-mci/php-acme/bin/php-acme
+    __DIR__ . '/../../../autoload.php',
+    // 本项目内 composer install 之后
+    __DIR__ . '/../vendor/autoload.php',
+    // 零依赖启动
+    __DIR__ . '/../bootstrap.php',
+];
+
+$loaded = false;
+foreach ($autoloaders as $autoloader) {
+    if (is_file($autoloader)) {
+        require $autoloader;
+        $loaded = true;
+        break;
+    }
+}
+
+if (!$loaded) {
+    fwrite(STDERR, "错误：找不到自动加载文件，项目文件可能不完整。\n");
+    exit(1);
+}
+
+if (PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg') {
+    fwrite(STDERR, "错误：php-acme 只能在命令行下运行。\n");
+    exit(1);
+}
+
+if (version_compare(PHP_VERSION, '7.2.0', '<')) {
+    fwrite(STDERR, sprintf("错误：php-acme 需要 PHP 7.2 及以上，当前是 %s。\n", PHP_VERSION));
+    exit(1);
+}
+
+if (!extension_loaded('openssl')) {
+    fwrite(STDERR, "错误：php-acme 需要 openssl 扩展，当前 PHP 没有启用它。\n");
+    exit(1);
+}
+
+$application = new PhpAcme\Cli\Application();
+
+exit($application->run($argv));

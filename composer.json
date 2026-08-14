@@ -1,0 +1,114 @@
+{
+    "name": "likun-mci/php-acme",
+    "description": "用原生 PHP 实现的 ACME v2 (RFC 8555) 证书客户端，acme.sh 的完整功能对等实现：账户、订单、http-01/dns-01/tls-alpn-01 验证、签发续期吊销、部署与通知钩子。全程不调用 openssl/curl/crontab 等外部进程，为禁用 exec 的共享主机与受管控服务器而写。支持 Let's Encrypt、ZeroSSL、BuyPass、Google Trust Services、SSL.com 与数十家 DNS 提供商。",
+    "type": "library",
+    "keywords": [
+        "acme",
+        "acme-v2",
+        "acme-client",
+        "rfc8555",
+        "letsencrypt",
+        "lets-encrypt",
+        "zerossl",
+        "buypass",
+        "ssl",
+        "tls",
+        "certificate",
+        "https",
+        "dns-01",
+        "http-01",
+        "tls-alpn-01",
+        "dns-api",
+        "auto-renew",
+        "free-ssl",
+        "acme.sh",
+        "no-exec",
+        "shared-hosting",
+        "csr",
+        "x509"
+    ],
+    "homepage": "https://github.com/likun-mci/php-acme",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "likun-mci",
+            "email": "likun.work@qq.com",
+            "homepage": "https://likun.work",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "likun.work@qq.com",
+        "issues": "https://github.com/likun-mci/php-acme/issues",
+        "source": "https://github.com/likun-mci/php-acme"
+    },
+    "require": {
+        "php": ">=7.2",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-mbstring": "*"
+    },
+    "suggest": {
+        "ext-curl": "启用后用 curl 发请求，比 stream 更稳，也才能用上 HTTP/2 与精细超时控制",
+        "ext-sockets": "standalone 模式（内置 http-01 服务器）与 tls-alpn-01 需要它监听端口",
+        "ext-intl": "启用后用 idn_to_ascii() 处理国际化域名；没有则回退到内置的 punycode 实现",
+        "ext-zip": "导出 PKCS#12 打包时用到"
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpAcme\\": "src/"
+        },
+        "files": [
+            "src/polyfill.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpAcme\\Tests\\": "tests/lib/"
+        }
+    },
+    "bin": [
+        "bin/php-acme"
+    ],
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "scripts": {
+        "test": [
+            "@test-compat",
+            "@test-unit"
+        ],
+        "test-compat": [
+            "php tests/php72_compat_test.php",
+            "php tests/no_exec_test.php"
+        ],
+        "test-unit": [
+            "php tests/polyfill_test.php",
+            "php tests/base64url_test.php",
+            "php tests/asn1_test.php",
+            "php tests/crypto_test.php",
+            "php tests/jws_test.php",
+            "php tests/csr_test.php",
+            "php tests/certificate_test.php",
+            "php tests/idn_test.php",
+            "php tests/domain_test.php",
+            "php tests/config_test.php",
+            "php tests/storage_test.php",
+            "php tests/http_test.php",
+            "php tests/protocol_test.php",
+            "php tests/dns_provider_test.php",
+            "php tests/challenge_test.php",
+            "php tests/issue_flow_test.php",
+            "php tests/renew_test.php",
+            "php tests/deploy_notify_test.php",
+            "php tests/cli_test.php"
+        ],
+        "test-network": "php tests/network/staging_test.php"
+    },
+    "scripts-descriptions": {
+        "test": "跑全部离线测试（兼容性扫描 + 单元测试），不联网",
+        "test-network": "对 Let's Encrypt staging 环境跑一次真实签发，需要可用域名与网络"
+    }
+}
