@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Mci\Acme\Http\Transport;
 
 use Mci\Acme\Exception\HttpException;
+use Mci\Acme\Http\Proxy\Proxy;
 use Mci\Acme\Http\Request;
 use Mci\Acme\Http\Response;
 use Mci\Acme\Util\Platform;
@@ -72,16 +73,33 @@ class CurlTransport implements TransportInterface
             $options[CURLOPT_CAINFO] = $caFile;
         }
 
-        $proxy = $request->getProxy();
-        if ($proxy !== null && $proxy !== '') {
-            $options[CURLOPT_PROXY] = $proxy;
-            // socks5h 让 DNS 也走代理，内网环境里这是刚需
-            if (str_starts_with($proxy, 'socks5h://')) {
+        $proxy = $request->getProxyConfig();
+        if ($proxy !== null) {
+            $options[CURLOPT_PROXY] = $proxy->toCurlString();
+            $options[CURLOPT_PROXYPORT] = $proxy->getPort();
+
+            // 代理类型要显式指定。光给地址的话 curl 按 http 处理，
+            // socks5h:// 这种写法它是不认的
+            if ($proxy->getScheme() === Proxy::SCHEME_SOCKS5H) {
+                // SOCKS5_HOSTNAME 表示域名交给代理解析，本地 DNS 不通时的唯一出路
                 $options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5_HOSTNAME;
-            } elseif (str_starts_with($proxy, 'socks5://')) {
+            } elseif ($proxy->getScheme() === Proxy::SCHEME_SOCKS5) {
                 $options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS5;
-            } elseif (str_starts_with($proxy, 'socks4://')) {
-                $options[CURLOPT_PROXYTYPE] = CURLPROXY_SOCKS4;
+            } else {
+                $options[CURLOPT_PROXYTYPE] = CURLPROXY_HTTP;
+                // 访问 https 目标时必须走 CONNECT 隧道，curl 会自动这么做，
+                // 这里只需保证不去改写请求行
+                $options[CURLOPT_HTTPPROXYTUNNEL] = true;
+            }
+
+            if ($proxy->hasCredentials()) {
+                $options[CURLOPT_PROXYUSERPWD] = sprintf(
+                    '%s:%s',
+                    $proxy->getUsername(),
+                    (string) $proxy->getPassword()
+                );
+                // 让 curl 自己挑代理支持的认证方式，Basic 与 NTLM 的企业网关都能过
+                $options[CURLOPT_PROXYAUTH] = CURLAUTH_ANY;
             }
         }
 

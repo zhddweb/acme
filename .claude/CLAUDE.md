@@ -137,6 +137,22 @@ php tests/no_exec_test.php         # 静态扫描：禁止外部进程调用
 4. **dns-01 的 TXT 值要再 SHA-256 一次**：http-01 是 `token.thumbprint` 明文，
    dns-01 是 `base64url(sha256(token.thumbprint))`。
 
+## 代理
+
+所有出网请求都要能走代理——目标环境里「机器上不去外网，只有一个代理」是常态。
+
+- 代理配置只从 `HttpClient` 走，别在业务层各自读环境变量。
+  `ProxyResolver` 负责按 URL 选代理（含 `NO_PROXY` 判定），
+  `Request::getProxyConfig()` 拿到的是已经决定好的结果。
+- **curl 与无 curl 是两条完全不同的路径**。curl 什么都支持；没有 curl 时
+  `https` + 代理必须自己建 CONNECT 隧道（PHP 的 stream wrapper 做不到），
+  SOCKS5 也得手写握手。改动 `src/Http/Proxy/` 或 `SocketTransport` 后，
+  两条路径都要验证。
+- `socks5` 与 `socks5h` 的区别不是小事：前者本地解析域名，后者交给代理。
+  受限网络下本地 DNS 往往也不通，默认推荐 `socks5h`。
+- 打日志时代理密码**必须打码**，用 `Proxy::toSafeString()`，
+  不要直接拼 `$proxy` 的原始地址。
+
 ## 网络与幂等
 
 - **nonce 必须串行使用**。`src/Protocol/NonceManager.php` 缓存服务端每次响应回的

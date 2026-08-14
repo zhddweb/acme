@@ -17,6 +17,14 @@ use Mci\Acme\Util\Platform;
  */
 class StreamTransport implements TransportInterface
 {
+    /** @var SocketTransport 需要隧道时委托给它 */
+    private $socketTransport;
+
+    public function __construct(?SocketTransport $socketTransport = null)
+    {
+        $this->socketTransport = $socketTransport !== null ? $socketTransport : new SocketTransport();
+    }
+
     public function isAvailable(): bool
     {
         return Platform::hasStreamHttp();
@@ -29,6 +37,13 @@ class StreamTransport implements TransportInterface
 
     public function send(Request $request): Response
     {
+        // stream wrapper 的 proxy 选项只能做一件事：把绝对 URI 发给 http 代理。
+        // 访问 https 目标要先 CONNECT 建隧道，SOCKS 更是另一套协议，
+        // 这两种它都做不到，交给 SocketTransport 自己拿 socket 干
+        if ($this->needsTunnel($request)) {
+            return $this->socketTransport->send($request);
+        }
+
         $headerLines = [];
         foreach ($request->getHeaders() as $name => $value) {
             $headerLines[] = $name . ': ' . $value;
@@ -50,16 +65,20 @@ class StreamTransport implements TransportInterface
             $httpOptions['content'] = $body;
         }
 
-        $proxy = $request->getProxy();
-        if ($proxy !== null && $proxy !== '') {
-            if (str_starts_with($proxy, 'socks')) {
-                throw new HttpException(
-                    'stream 传输层不支持 SOCKS 代理，请安装 curl 扩展，或改用 http:// 代理'
-                );
-            }
-            // stream 的代理地址要写成 tcp://host:port
-            $httpOptions['proxy'] = str_replace(['http://', 'https://'], 'tcp://', $proxy);
+        $proxy = $request->getProxyConfig();
+        if ($proxy !== null) {
+            // 走到这里只剩「http 代理 + http 目标」一种组合，
+            // 其余的在 send() 开头就转给 SocketTransport 了
+            $httpOptions['proxy'] = sprintf('tcp://%s:%d', $proxy->getHost(), $proxy->getPort());
+            // 让 stream 发绝对 URI（GET http://host/path），代理才认
             $httpOptions['request_fulluri'] = true;
+
+            if ($proxy->hasCredentials()) {
+                $headerLines[] = 'Proxy-Authorization: Basic ' . base64_encode(
+                    $proxy->getUsername() . ':' . (string) $proxy->getPassword()
+                );
+                $httpOptions['header'] = implode("\r\n", $headerLines);
+            }
         }
 
         $sslOptions = [
@@ -107,6 +126,24 @@ class StreamTransport implements TransportInterface
             $request->getMethod() === 'HEAD' ? '' : $responseBody,
             $request->getUrl()
         );
+    }
+
+    /**
+     * 这次请求是不是必须自己建隧道。
+     */
+    private function needsTunnel(Request $request): bool
+    {
+        $proxy = $request->getProxyConfig();
+
+        if ($proxy === null) {
+            return false;
+        }
+
+        if ($proxy->isSocks()) {
+            return true;
+        }
+
+        return str_starts_with(strtolower($request->getUrl()), 'https://');
     }
 
     /** @param array<int, string> $lines */

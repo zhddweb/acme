@@ -97,6 +97,7 @@
             "php tests/config_test.php",
             "php tests/storage_test.php",
             "php tests/http_test.php",
+            "php tests/proxy_test.php",
             "php tests/protocol_test.php",
             "php tests/dns_provider_test.php",
             "php tests/challenge_test.php",

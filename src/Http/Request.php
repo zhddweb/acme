@@ -36,7 +36,7 @@ class Request
     /** @var string|null 自定义 CA bundle 路径 */
     private $caFile;
 
-    /** @var string|null 代理，形如 http://user:pass@host:port 或 socks5://host:port */
+    /** @var \Mci\Acme\Http\Proxy\Proxy|null 这次请求该走的代理；null 表示直连 */
     private $proxy;
 
     /**
@@ -151,13 +151,18 @@ class Request
         $this->caFile = $caFile;
     }
 
-    public function getProxy(): ?string
+    public function getProxyConfig(): ?\Mci\Acme\Http\Proxy\Proxy
     {
         return $this->proxy;
     }
 
-    public function setProxy(?string $proxy): void
+    public function setProxyConfig(?\Mci\Acme\Http\Proxy\Proxy $proxy): void
     {
         $this->proxy = $proxy;
+    }
+
+    public function usesProxy(): bool
+    {
+        return $this->proxy !== null;
     }
 }

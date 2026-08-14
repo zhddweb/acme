@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Mci\Acme\Http;
 
 use Mci\Acme\Exception\HttpException;
+use Mci\Acme\Http\Proxy\Proxy;
+use Mci\Acme\Http\Proxy\ProxyResolver;
 use Mci\Acme\Http\Transport\CurlTransport;
 use Mci\Acme\Http\Transport\StreamTransport;
 use Mci\Acme\Http\Transport\TransportInterface;
@@ -48,8 +50,8 @@ class HttpClient
     /** @var string|null */
     private $caFile;
 
-    /** @var string|null */
-    private $proxy;
+    /** @var ProxyResolver 决定每个 URL 走不走代理 */
+    private $proxies;
 
     /** @var string */
     private $userAgent;
@@ -67,14 +69,9 @@ class HttpClient
             PHP_VERSION
         );
 
-        // 代理常用的三个环境变量，acme.sh 也认这几个，行为对齐
-        foreach (['HTTPS_PROXY', 'https_proxy', 'ALL_PROXY', 'all_proxy'] as $name) {
-            $value = getenv($name);
-            if (\is_string($value) && $value !== '') {
-                $this->proxy = $value;
-                break;
-            }
-        }
+        // 代理默认从环境变量读（HTTPS_PROXY / HTTP_PROXY / ALL_PROXY / NO_PROXY），
+        // 与 curl 和 acme.sh 的习惯一致；显式设置会覆盖它
+        $this->proxies = new ProxyResolver();
     }
 
     /**
@@ -142,9 +139,50 @@ class HttpClient
         $this->caFile = $caFile;
     }
 
-    public function setProxy(?string $proxy): void
+    /**
+     * 设置代理。
+     *
+     * @param string|Proxy|null $proxy 形如 http://user:pass@host:port、
+     *        socks5h://host:1080，或已经构造好的 Proxy；null 表示取消显式设置，
+     *        退回环境变量
+     */
+    public function setProxy($proxy): void
     {
-        $this->proxy = $proxy;
+        if ($proxy === null || $proxy === '') {
+            $this->proxies->setExplicit(null);
+
+            return;
+        }
+
+        $this->proxies->setExplicit($proxy instanceof Proxy ? $proxy : Proxy::fromString((string) $proxy));
+    }
+
+    public function getProxyResolver(): ProxyResolver
+    {
+        return $this->proxies;
+    }
+
+    /** 当前用的是哪套传输层：curl / stream / socket / mock */
+    public function getTransportName(): string
+    {
+        return $this->transport->getName();
+    }
+
+    /**
+     * 追加不走代理的主机，逗号分隔或数组。
+     *
+     * @param string|array<int, string> $hosts
+     */
+    public function addNoProxy($hosts): void
+    {
+        $this->proxies->addNoProxy($hosts);
+    }
+
+    /** 关掉环境变量里的代理，强制直连 */
+    public function disableProxy(): void
+    {
+        $this->proxies->setExplicit(null);
+        $this->proxies->setUseEnvironment(false);
     }
 
     public function setUserAgent(string $userAgent): void
@@ -279,7 +317,8 @@ class HttpClient
         $request->setTimeouts($this->connectTimeout, $this->timeout);
         $request->setVerifyPeer($this->verifyPeer);
         $request->setCaFile($this->caFile);
-        $request->setProxy($this->proxy);
+        // 逐个 URL 决定：NO_PROXY 命中的直连，其余按 scheme 选代理
+        $request->setProxyConfig($this->proxies->resolve($url));
 
         return $request;
     }

@@ -100,6 +100,7 @@ class Application
 
         try {
             $acme = new Acme($this->resolveBaseDir($args), $logger);
+            $this->applyProxy($args, $acme, $logger);
 
             return $command->execute($args, $acme, $logger);
         } catch (ProtocolException $e) {
@@ -182,6 +183,41 @@ class Application
         return $logger;
     }
 
+    /**
+     * 应用命令行上的代理设置。
+     *
+     * 优先级：--direct > --proxy > account.conf 里的 PROXY > 环境变量。
+     * 命令行最高是因为它是「这一次就想换一下」的场景，不该被配置文件盖住。
+     */
+    private function applyProxy(ArgvParser $args, Acme $acme, Logger $logger): void
+    {
+        $http = $acme->getHttpClient();
+
+        if ($args->getFlag('direct')) {
+            $http->disableProxy();
+            $logger->debug('已强制直连，忽略配置与环境变量里的代理');
+
+            return;
+        }
+
+        $proxy = $args->get('proxy');
+        if ($proxy !== null && $proxy !== '') {
+            $http->setProxy($proxy);
+        }
+
+        $noProxy = $args->get('noproxy');
+        if ($noProxy !== null && $noProxy !== '') {
+            $http->addNoProxy($noProxy);
+        }
+
+        // 把最终生效的代理打进调试日志。受限网络下最常见的问题就是
+        // 「以为配上了其实没生效」，有这一行能省很多来回
+        $resolved = $http->getProxyResolver()->resolve('https://acme-v02.api.letsencrypt.org/directory');
+        if ($resolved !== null) {
+            $logger->debug(sprintf('HTTP 请求将通过代理 %s', $resolved->toSafeString()));
+        }
+    }
+
     private function resolveBaseDir(ArgvParser $args): ?string
     {
         $home = $args->get('home');
@@ -224,6 +260,10 @@ class Application
         $lines[] = '  --debug             打印调试日志，含每一次 HTTP 请求';
         $lines[] = '  --quiet             只输出错误';
         $lines[] = '  --log <文件>        把日志追加写到文件，cron 里建议加上';
+        $lines[] = '  --proxy <地址>      通过代理访问 CA 与 DNS API，支持 http/https/socks5/socks5h';
+        $lines[] = '                      例：--proxy http://user:pass@127.0.0.1:8080 或 socks5h://127.0.0.1:1080';
+        $lines[] = '  --noproxy <主机>    这些主机不走代理，逗号分隔（与 curl 的 --noproxy 同义）';
+        $lines[] = '  --direct            强制直连，忽略配置文件与环境变量里的代理';
         $lines[] = '  --help              查看某个命令的详细用法：mci-acme help issue';
         $lines[] = '  --version           显示版本';
         $lines[] = '';

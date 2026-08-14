@@ -116,6 +116,44 @@ mci-acme check-dns -d example.com      # 排查 dns-01：直接问权威 NS
 mci-acme list-dns                      # 列出支持的 DNS 提供商与所需变量
 ```
 
+### 网络受限时走代理
+
+所有出网请求（CA 接口、DNS 提供商 API、ZeroSSL 换 EAB）都能走代理：
+
+```bash
+# 临时用一次
+mci-acme issue -d example.com -w /var/www/html --proxy http://127.0.0.1:8080
+
+# 存进配置，之后所有命令默认都走它
+mci-acme set-proxy socks5h://127.0.0.1:1080 --noproxy "localhost,.internal"
+mci-acme show-proxy          # 看当前生效的是哪个、从哪来的
+
+# 这一次强制直连，忽略配置与环境变量
+mci-acme renew-all --direct
+```
+
+也认 curl 那套环境变量，运维配好的不用重配：
+`HTTPS_PROXY`、`HTTP_PROXY`、`ALL_PROXY`、`NO_PROXY`（大小写都行）。
+
+优先级：`--direct` > `--proxy` > `account.conf` 里的 `PROXY` > 环境变量。
+
+支持 `http` / `https` / `socks5` / `socks5h` 四种。**受限网络下建议用 `socks5h`**：
+它把域名交给代理去解析，而 `socks5` 是本地解析——如果本地 DNS 本身就不通
+（这往往正是要用代理的原因），`socks5` 会卡在解析那一步。
+
+作为库使用时：
+
+```php
+$acme = new Acme();
+$acme->getHttpClient()->setProxy('socks5h://127.0.0.1:1080');
+$acme->getHttpClient()->addNoProxy('internal.corp');
+```
+
+> **dns-01 的传播检测走的是 UDP DNS，不经过代理。** HTTP 代理转发不了 UDP，
+> 而 SOCKS5 的 UDP associate 在多数代理上是关闭的。本库的做法是：
+> 直接查权威 NS 失败时自动回退到系统解析器。如果连系统 DNS 都不通，
+> 把 `--dns-sleep` 调大让它盲等，或改用 http-01。
+
 acme.sh 风格的写法也能用，现有脚本改个程序名就行：
 
 ```bash
@@ -234,6 +272,14 @@ UDP 响应被截断（TC 位）时自动换 TCP。
 **服务重载用信号而不是 shell。** `nginx -s reload` 本质就是读 pid 文件然后 `kill -HUP`，
 `systemctl reload` 也只是转发信号。直接 `posix_kill()` 效果一样，还少一层依赖。
 
+**代理的 CONNECT 隧道是自己写的。** PHP 的 stream wrapper 有个 `proxy` 选项，
+但它只能把绝对 URI 发给 HTTP 代理——访问 `https://` 需要先发 CONNECT 建隧道
+再在隧道里握手 TLS，PHP 的 https wrapper 不做这件事，SOCKS5 更是完全没有。
+所以 `src/Http/Proxy/ProxyConnector.php` 手写了 CONNECT 与 SOCKS5 握手
+（RFC 1928 / RFC 1929），`SocketTransport` 在拿到的裸 socket 上自己收发 HTTP/1.1。
+有 curl 时用不到这些（curl 全都支持），它们是为「没有 curl + 网络受限」
+这个组合准备的，而那恰恰是本库的目标环境之一。
+
 **通配符只能用 dns-01**，这是 CA 的硬规则 —— 服务端根本不会为 `*.example.com`
 提供 http-01 挑战。本库在构造请求时就拦下来，而不是等到跑一半才失败。
 
@@ -244,7 +290,7 @@ composer test          # 全部离线测试，不联网，约 20 秒
 composer test-network  # 对 Let's Encrypt staging 跑一次真实签发（需要真实域名）
 ```
 
-离线测试有 **21 个文件、900 多项断言**，全部不打真实 CA、不打真实 DNS API：
+离线测试有 **22 个文件、1000 多项断言**，全部不打真实 CA、不打真实 DNS API：
 
 - `tests/lib/FakeAcmeServer.php` 是一个**会真验签的** ACME 服务端模拟器 ——
   它校验 JWS 签名、检测 nonce 重放、按状态机推进订单、核对 CSR 里的 SAN
@@ -253,6 +299,8 @@ composer test-network  # 对 Let's Encrypt staging 跑一次真实签发（需�
 - 加密部分用了 **RFC 7638（JWK Thumbprint）与 RFC 3492（Punycode）的官方测试向量**，
   CSR 与自签证书另外过了一遍 `openssl` 命令行的交叉校验。
 - DNS 提供商的签名算法（阿里云 HMAC-SHA1、腾讯云 TC3、AWS SigV4）都按规范手工重算了一遍对拍。
+- 代理部分用 `stream_socket_pair()` 造一对连通的 socket，**逐字节断言**
+  CONNECT 请求与 SOCKS5 握手报文（含分包到达、认证子协商、各种错误码）。
 - `php72_compat_test.php` 静态扫描 PHP 7.2 语法兼容性，`no_exec_test.php` 扫描外部进程调用，
   两者都带规则自检与反向自检。
 

@@ -13,6 +13,7 @@ use Mci\Acme\Crypto\Certificate;
 use Mci\Acme\Crypto\Csr;
 use Mci\Acme\Crypto\KeyPair;
 use Mci\Acme\Exception\ConfigException;
+use Mci\Acme\Http\Proxy\Proxy;
 use Mci\Acme\Util\DnsResolver;
 use Mci\Acme\Util\Domain;
 use Mci\Acme\Util\Filesystem;
@@ -28,7 +29,10 @@ class ToolsCommand implements CommandInterface
 {
     public function getNames(): array
     {
-        return ['tools', 'create-key', 'create-csr', 'show-csr', 'show-cert', 'check-dns', 'list-ca', 'list-dns'];
+        return [
+            'tools', 'create-key', 'create-csr', 'show-csr', 'show-cert',
+            'check-dns', 'list-ca', 'list-dns', 'set-proxy', 'show-proxy',
+        ];
     }
 
     public function getSummary(): string
@@ -49,6 +53,9 @@ class ToolsCommand implements CommandInterface
             '  check-dns -d <域名>                      查 _acme-challenge 的 TXT 记录',
             '  list-ca                                  列出内置的 CA',
             '  list-dns                                 列出支持的 DNS 提供商及所需凭据',
+            '  set-proxy <地址> [--noproxy <主机>]      把代理写进全局配置，之后所有命令都用它',
+            '  set-proxy --direct                       清掉已保存的代理',
+            '  show-proxy                               看当前生效的代理是哪个、从哪来的',
             '',
             'check-dns 是排查 dns-01 失败的第一步：它直接问域名的权威 NS，',
             '绕开所有缓存，看到的就是 CA 会看到的。',
@@ -74,6 +81,10 @@ class ToolsCommand implements CommandInterface
                 return $this->listCa($logger);
             case 'list-dns':
                 return $this->listDns($logger);
+            case 'set-proxy':
+                return $this->setProxy($args, $acme, $logger);
+            case 'show-proxy':
+                return $this->showProxy($args, $acme, $logger);
             default:
                 $logger->write($this->getUsage());
 
@@ -282,6 +293,109 @@ class ToolsCommand implements CommandInterface
         $logger->write('');
         $logger->write('用法：先 export 对应的变量，再 mci-acme issue -d 域名 --dns <短名>');
         $logger->write('签发时凭据会存进证书目录的 .conf，之后续期不用再 export。');
+
+        return 0;
+    }
+
+    /**
+     * 把代理写进 account.conf，之后所有命令默认都走它。
+     */
+    private function setProxy(ArgvParser $args, Acme $acme, Logger $logger): int
+    {
+        $config = $acme->getGlobalConfig();
+
+        if ($args->getFlag('direct')) {
+            $config->set(Acme::CONFIG_PROXY, null);
+            $config->set(Acme::CONFIG_NO_PROXY, null);
+            $config->save();
+
+            $logger->write('已清除保存的代理设置，之后走直连（环境变量仍然有效）。');
+
+            return 0;
+        }
+
+        // 地址可以写成位置参数（set-proxy http://...）或选项（--proxy http://...）
+        $address = $args->getArgument(1);
+        if ($address === null || $address === '' || $address === $args->getCommand()) {
+            $address = $args->get('proxy');
+        }
+
+        if ($address === null || $address === '') {
+            throw new ConfigException(
+                '请给出代理地址，例如：mci-acme set-proxy socks5h://127.0.0.1:1080'
+            );
+        }
+
+        // 先解析一遍，写错了当场报错，别等到下次签发才发现
+        $proxy = Proxy::fromString($address);
+
+        $config->set(Acme::CONFIG_PROXY, $address);
+
+        $noProxy = $args->get('noproxy');
+        if ($noProxy !== null && $noProxy !== '') {
+            $config->set(Acme::CONFIG_NO_PROXY, $noProxy);
+        }
+
+        $config->save();
+
+        $logger->write(sprintf('代理已保存：%s', $proxy->toSafeString()));
+        $logger->write(sprintf('写入 %s（权限 0600，里面可能含密码）', $config->getPath()));
+
+        if ($proxy->isSocks() && !$proxy->resolvesRemotely()) {
+            $logger->write('');
+            $logger->write('提示：用的是 socks5://，域名会在本地解析。');
+            $logger->write('若本地 DNS 也不通（受限网络下很常见），改成 socks5h:// 让代理去解析。');
+        }
+
+        return 0;
+    }
+
+    /**
+     * 显示当前生效的代理，以及它是从哪儿来的。
+     */
+    private function showProxy(ArgvParser $args, Acme $acme, Logger $logger): int
+    {
+        $config = $acme->getGlobalConfig();
+        $saved = $config->get(Acme::CONFIG_PROXY);
+
+        $logger->write('配置文件（' . $config->getPath() . '）：');
+        $logger->write(sprintf('  PROXY    = %s', $saved !== null && $saved !== '' ? Proxy::fromString($saved)->toSafeString() : '（未设置）'));
+        $logger->write(sprintf('  NO_PROXY = %s', (string) $config->get(Acme::CONFIG_NO_PROXY, '（未设置）')));
+
+        $logger->write('');
+        $logger->write('环境变量：');
+        foreach (['HTTPS_PROXY', 'HTTP_PROXY', 'ALL_PROXY', 'NO_PROXY'] as $name) {
+            $value = getenv($name);
+            if (!\is_string($value) || $value === '') {
+                $value = getenv(strtolower($name));
+            }
+            $logger->write(sprintf('  %-11s = %s', $name, \is_string($value) && $value !== '' ? $value : '（未设置）'));
+        }
+
+        $logger->write('');
+
+        $resolver = $acme->getHttpClient()->getProxyResolver();
+        $sample = 'https://acme-v02.api.letsencrypt.org/directory';
+        $effective = $resolver->resolve($sample);
+
+        $logger->write(sprintf(
+            '访问 %s 时实际走：%s',
+            parse_url($sample, PHP_URL_HOST),
+            $effective !== null ? $effective->toSafeString() : '直连'
+        ));
+
+        if ($resolver->getNoProxy() !== []) {
+            $logger->write(sprintf('不走代理的主机：%s', implode(', ', $resolver->getNoProxy())));
+        }
+
+        $logger->write('');
+        $logger->write(sprintf(
+            '传输层：%s%s',
+            $acme->getHttpClient()->getTransportName(),
+            $acme->getHttpClient()->getTransportName() === 'curl'
+                ? '（代理由 curl 处理，http/https/socks5/socks5h 全支持）'
+                : '（无 curl，走内置的 CONNECT 隧道与 SOCKS5 实现）'
+        ));
 
         return 0;
     }

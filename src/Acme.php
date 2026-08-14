@@ -35,6 +35,11 @@ class Acme
 {
     const VERSION = '1.0.0';
 
+    /** account.conf 里代理地址的键名 */
+    const CONFIG_PROXY = 'PROXY';
+    /** account.conf 里不走代理的主机清单 */
+    const CONFIG_NO_PROXY = 'NO_PROXY';
+
     /** @var Paths */
     private $paths;
 
@@ -87,6 +92,28 @@ class Acme
 
         $this->renewals = new RenewalService($this->issuer, $this->solvers, $this->logger);
         $this->revocations = new RevocationService($this->http, $this->certificates, $this->accounts, $this->logger);
+
+        $this->applyProxyFromConfig();
+    }
+
+    /**
+     * 把全局配置里的代理设置应用到 HTTP 客户端。
+     *
+     * 放在这里而不是只做进 CLI：受限网络下用库直接调用的人同样需要代理，
+     * 让他们在 account.conf 里配一次就够，不必每次 new 完再手工 setProxy()。
+     * 环境变量仍然有效，配置文件优先级更高。
+     */
+    private function applyProxyFromConfig(): void
+    {
+        $proxy = $this->globalConfig->get(self::CONFIG_PROXY);
+        if ($proxy !== null && trim($proxy) !== '') {
+            $this->http->setProxy(trim($proxy));
+        }
+
+        $noProxy = $this->globalConfig->get(self::CONFIG_NO_PROXY);
+        if ($noProxy !== null && trim($noProxy) !== '') {
+            $this->http->addNoProxy(trim($noProxy));
+        }
     }
 
     /**
