@@ -35,14 +35,14 @@ php-acme 把这些依赖全部换成 PHP 自己的能力：
 ## 安装
 
 ```bash
-composer require likun-mci/php-acme
+composer require likun-mci/acme
 ```
 
 跑不了 composer 的机器上，直接下载解压也能用 —— 项目自带零依赖的 `bootstrap.php`：
 
 ```bash
-git clone https://github.com/likun-mci/php-acme.git
-php php-acme/bin/php-acme --version
+git clone https://github.com/likun-mci/acme.git
+php acme/bin/php-acme --version
 ```
 
 **要求**：PHP >= 7.2，`ext-openssl`、`ext-json`、`ext-mbstring`。

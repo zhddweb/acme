@@ -62,7 +62,7 @@ class HttpClient
         $this->logger = $logger !== null ? $logger : Logger::silent();
         $this->transport = $transport !== null ? $transport : self::detectTransport();
         $this->userAgent = sprintf(
-            'php-acme/%s (+https://github.com/likun-mci/php-acme) PHP/%s',
+            'php-acme/%s (+https://github.com/likun-mci/acme) PHP/%s',
             self::VERSION,
             PHP_VERSION
         );

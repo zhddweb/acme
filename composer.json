@@ -1,5 +1,5 @@
 {
-    "name": "likun-mci/php-acme",
+    "name": "likun-mci/acme",
     "description": "用原生 PHP 实现的 ACME v2 (RFC 8555) 证书客户端，acme.sh 的完整功能对等实现：账户、订单、http-01/dns-01/tls-alpn-01 验证、签发续期吊销、部署与通知钩子。全程不调用 openssl/curl/crontab 等外部进程，为禁用 exec 的共享主机与受管控服务器而写。支持 Let's Encrypt、ZeroSSL、BuyPass、Google Trust Services、SSL.com 与数十家 DNS 提供商。",
     "type": "library",
     "keywords": [
@@ -27,7 +27,7 @@
         "csr",
         "x509"
     ],
-    "homepage": "https://github.com/likun-mci/php-acme",
+    "homepage": "https://github.com/likun-mci/acme",
     "license": "MIT",
     "authors": [
         {
@@ -39,8 +39,8 @@
     ],
     "support": {
         "email": "likun.work@qq.com",
-        "issues": "https://github.com/likun-mci/php-acme/issues",
-        "source": "https://github.com/likun-mci/php-acme"
+        "issues": "https://github.com/likun-mci/acme/issues",
+        "source": "https://github.com/likun-mci/acme"
     },
     "require": {
         "php": ">=7.2",

@@ -103,7 +103,7 @@ class DnsPod extends AbstractDnsProvider
         $response = $this->send('POST', self::API . $path, http_build_query($params), [
             'Content-Type' => 'application/x-www-form-urlencoded',
             // DNSPod 要求带 UA 且必须包含联系邮箱，否则直接拒绝
-            'User-Agent' => 'php-acme/1.0 (https://github.com/likun-mci/php-acme)',
+            'User-Agent' => 'php-acme/1.0 (https://github.com/likun-mci/acme)',
         ]);
 
         $data = $response->tryJson();
