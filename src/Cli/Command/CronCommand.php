@@ -48,12 +48,16 @@ class CronCommand implements CommandInterface
         $binary = $this->resolveBinary();
         $php = PHP_BINARY !== '' ? PHP_BINARY : 'php';
         $logFile = (string) $args->get('log', '/var/log/mci-acme.log');
-        $home = $acme->getPaths()->getBaseDir();
+        $paths = $acme->getPaths();
+        $home = $paths->getBaseDir();
+        // 证书被挪到别处时（acme.sh 的 --cert-home / CERT_HOME），cron 里也得带上，
+        // 否则定时任务找不到证书，只会安静地报一句「没有证书需要续期」
+        $certHome = $paths->getCertHome() !== $home ? $paths->getCertHome() : null;
 
         if ($args->getFlag('systemd')) {
-            $this->printSystemd($logger, $php, $binary, $logFile, $home);
+            $this->printSystemd($logger, $php, $binary, $logFile, $home, $certHome);
         } else {
-            $this->printCrontab($logger, $php, $binary, $logFile, $home);
+            $this->printCrontab($logger, $php, $binary, $logFile, $home, $certHome);
         }
 
         $logger->write('');
@@ -62,8 +66,14 @@ class CronCommand implements CommandInterface
         return 0;
     }
 
-    private function printCrontab(Logger $logger, string $php, string $binary, string $logFile, string $home): void
-    {
+    private function printCrontab(
+        Logger $logger,
+        string $php,
+        string $binary,
+        string $logFile,
+        string $home,
+        ?string $certHome
+    ): void {
         // 分钟取一个非整点的随机值：所有人都在 0 分跑会给 CA 造成尖峰，
         // Let's Encrypt 明确建议错开
         $minute = random_int(0, 59);
@@ -72,10 +82,11 @@ class CronCommand implements CommandInterface
         $logger->write('把下面这行加进 crontab（crontab -e）：');
         $logger->write('');
         $logger->write(sprintf(
-            '%d %d * * * MCI_ACME_CONFIG_HOME=%s %s %s renew-all --log %s',
+            '%d %d * * * MCI_ACME_CONFIG_HOME=%s %s%s %s renew-all --log %s',
             $minute,
             $hour,
             $home,
+            $certHome !== null ? sprintf('CERT_HOME=%s ', $certHome) : '',
             $php,
             $binary,
             $logFile
@@ -88,11 +99,15 @@ class CronCommand implements CommandInterface
         $logger->write('    或者确认签发时已经存进了 .conf（默认会存）。');
     }
 
-    private function printSystemd(Logger $logger, string $php, string $binary, string $logFile, string $home): void
-    {
-        $logger->write('创建 /etc/systemd/system/mci-acme.service：');
-        $logger->write('');
-        $logger->write(implode("\n", [
+    private function printSystemd(
+        Logger $logger,
+        string $php,
+        string $binary,
+        string $logFile,
+        string $home,
+        ?string $certHome
+    ): void {
+        $unit = [
             '[Unit]',
             'Description=mci-acme 证书续期',
             'After=network-online.target',
@@ -100,8 +115,17 @@ class CronCommand implements CommandInterface
             '[Service]',
             'Type=oneshot',
             sprintf('Environment=MCI_ACME_CONFIG_HOME=%s', $home),
-            sprintf('ExecStart=%s %s renew-all --log %s', $php, $binary, $logFile),
-        ]));
+        ];
+
+        if ($certHome !== null) {
+            $unit[] = sprintf('Environment=CERT_HOME=%s', $certHome);
+        }
+
+        $unit[] = sprintf('ExecStart=%s %s renew-all --log %s', $php, $binary, $logFile);
+
+        $logger->write('创建 /etc/systemd/system/mci-acme.service：');
+        $logger->write('');
+        $logger->write(implode("\n", $unit));
         $logger->write('');
         $logger->write('创建 /etc/systemd/system/mci-acme.timer：');
         $logger->write('');

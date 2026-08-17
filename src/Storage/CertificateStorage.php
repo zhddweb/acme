@@ -41,6 +41,17 @@ class CertificateStorage
     const KEY_REAL_FULLCHAIN_PATH = 'Le_RealFullChainPath';
     const KEY_NOTIFY_HOOK = 'Le_NotifyHook';
 
+    /**
+     * 根目录下不是证书的子目录。
+     *
+     * ca/ 与 tmp/ 是本库自己的；deploy/ dnsapi/ notify/ 是 acme.sh 装在
+     * 同一个目录里的脚本——默认根目录就是 ~/.acme.sh，两边共存是常态。
+     * 漏掉某个也不会出错（下面还会检查证书文件在不在），只是白跑一次 stat。
+     *
+     * @var array<int, string>
+     */
+    const NON_CERT_DIRS = ['ca', 'tmp', 'deploy', 'dnsapi', 'notify'];
+
     /** @var Paths */
     private $paths;
 
@@ -221,9 +232,9 @@ class CertificateStorage
     {
         $out = [];
 
-        foreach ($this->filesystem->listDirectories($this->paths->getBaseDir()) as $name) {
-            // ca/ 是账户目录，tmp/ 是临时目录，都不是证书
-            if ($name === 'ca' || $name === 'tmp') {
+        foreach ($this->filesystem->listDirectories($this->paths->getCertHome()) as $name) {
+            // 和 acme.sh 共用目录时，那边自己的子目录也会在这里出现，先排掉
+            if (\in_array($name, self::NON_CERT_DIRS, true) || str_starts_with($name, '.')) {
                 continue;
             }
 

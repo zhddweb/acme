@@ -37,15 +37,23 @@ acme.sh 是 shell 脚本，依赖 `openssl` 命令行、`curl`、`crontab`、`se
 
 ### 目录布局
 
-证书与账户默认存在 `~/.mci-acme/`，结构照抄 acme.sh，方便双向迁移：
+证书与账户**默认就存在 acme.sh 的 `~/.acme.sh/`**，结构也照抄它——目标是同一份数据
+两个客户端都能用，装过 acme.sh 的机器不用重签任何证书。别改成自有目录名：
+迁移成本会落到用户头上，还要多吃一次 CA 的速率限制。
 
 ```
-~/.mci-acme/
+~/.acme.sh/
   account.conf              # 全局配置
   ca/<ca-host>/<dir>/       # 每个 CA 一份账户密钥 + account.json
   <domain>[_ecc]/           # 每个证书一个目录
     <domain>.key  .csr  .cer  ca.cer  fullchain.cer  <domain>.conf
 ```
+
+根目录优先级：`--home`/`--config-home` > `MCI_ACME_CONFIG_HOME`（想和 acme.sh 分开时用）
+> `LE_CONFIG_HOME` > `LE_WORKING_DIR` > `~/.acme.sh`。
+证书目录可以单独挪：`--cert-home` > 环境变量 `CERT_HOME` > `account.conf` 的 `CERT_HOME`。
+路径全部走 `Storage\Paths`，账户类的用 `getBaseDir()`，证书类的用 `getCertHome()`——
+这两个不再总是同一个值，别再拿 baseDir 拼证书路径。
 
 ## 最低支持 PHP 7.2 —— 这是硬约束
 

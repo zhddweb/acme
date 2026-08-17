@@ -39,6 +39,8 @@ class Acme
     const CONFIG_PROXY = 'PROXY';
     /** account.conf 里不走代理的主机清单 */
     const CONFIG_NO_PROXY = 'NO_PROXY';
+    /** account.conf 里证书根目录的键名，与 acme.sh 的 --cert-home 同一个键 */
+    const CONFIG_CERT_HOME = 'CERT_HOME';
 
     /** @var Paths */
     private $paths;
@@ -80,6 +82,7 @@ class Acme
         $this->http = $http !== null ? $http : new HttpClient(null, $this->logger);
 
         $this->globalConfig = (new ConfigFile($this->paths->getAccountConfPath()))->load();
+        $this->applyCertHomeFromConfig();
 
         $this->certificates = new CertificateStorage($this->paths);
         $this->accountStorage = new AccountStorage($this->paths);
@@ -94,6 +97,28 @@ class Acme
         $this->revocations = new RevocationService($this->http, $this->certificates, $this->accounts, $this->logger);
 
         $this->applyProxyFromConfig();
+    }
+
+    /**
+     * account.conf 里的 CERT_HOME 决定证书放在哪。
+     *
+     * acme.sh 用 --cert-home 挪证书目录时，就是把路径写进 account.conf 的
+     * 这个键。默认根目录已经和 acme.sh 共用，这里再认一下这个键，
+     * 挪过证书目录的机器上才能真的找到那些证书。
+     *
+     * 显式指定过（构造参数 / CERT_HOME 环境变量 / --cert-home）时不覆盖：
+     * 那是「这一次就想换个地方」，优先级高于配置文件。
+     */
+    private function applyCertHomeFromConfig(): void
+    {
+        if ($this->paths->hasCustomCertHome()) {
+            return;
+        }
+
+        $certHome = $this->globalConfig->get(self::CONFIG_CERT_HOME);
+        if ($certHome !== null && trim($certHome) !== '') {
+            $this->paths->setCertHome(trim($certHome));
+        }
     }
 
     /**

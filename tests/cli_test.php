@@ -44,6 +44,10 @@ $t->equals('letsencrypt_test', $acmeSh->get('ca'), '--server 是 --ca 的别名'
 $t->equals('a@b.com', $acmeSh->get('email'), '--accountemail 是 --email 的别名');
 $t->equals(60, $acmeSh->getInt('dns-sleep', 0), '--dnssleep 映射到 --dns-sleep');
 
+$acmeShHome = new ArgvParser(['--issue', '-d', 'x.com', '--config-home', '/etc/acme', '--certhome', '/srv/certs']);
+$t->equals('/etc/acme', $acmeShHome->get('home'), '--config-home 是 --home 的别名');
+$t->equals('/srv/certs', $acmeShHome->get('cert-home'), '--certhome 映射到 --cert-home');
+
 $t->group('参数解析：下划线与短横线等价');
 
 $underscore = new ArgvParser(['--preferred_chain', 'ISRG Root X1', '--eab_kid', 'k1']);

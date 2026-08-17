@@ -33,6 +33,10 @@ class ArgvParser
         // acme.sh 的别名
         'server' => 'ca',
         'accountemail' => 'email',
+        // acme.sh 的 --config-home 指的就是这里的根目录；它的 --home 是安装目录，
+        // 本库没有安装目录这个概念，两个都归到 --home
+        'config-home' => 'home',
+        'certhome' => 'cert-home',
         'domain' => 'domain',
         'dnssleep' => 'dns-sleep',
         'renew-hook' => 'deploy-hook',

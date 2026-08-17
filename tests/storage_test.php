@@ -113,6 +113,16 @@ $t->ok(\in_array('example.com(ecc)', $domains, true), 'ECC 证书应当被列出
 $t->ok(\in_array('*.wild.example.com', $domains, true), '通配符证书的目录名应当还原回 *.');
 $t->ok(!\in_array('ca', $domains, true), 'ca 目录不该被当成证书');
 
+// 和 acme.sh 共用根目录时，它的 deploy/ dnsapi/ notify/ 就在旁边，
+// 里面万一有个同名的 .cer 也不能被当成证书列出来
+mkdir($base . '/deploy', 0700, true);
+file_put_contents($base . '/deploy/deploy.cer', 'not-a-cert');
+$deployDomains = [];
+foreach ($storage->listCertificates() as $item) {
+    $deployDomains[] = $item['domain'];
+}
+$t->ok(!\in_array('deploy', $deployDomains, true), 'acme.sh 自己的 deploy/ 目录不该被当成证书');
+
 $t->group('续期时间标记');
 
 $storage->markRenewed('example.com', 30, true);
@@ -193,5 +203,88 @@ $filesystem->write($target, 'second');
 
 $t->equals('second', $filesystem->read($target), '覆盖写入应当生效');
 $t->equals(0, \count(glob($base . '/.acme-tmp-*')), '不该留下临时文件');
+
+$t->group('默认目录：与 acme.sh 共用同一份数据');
+
+// 环境变量会影响后面的用例，先存下来，这一段跑完原样还回去
+$savedEnv = [];
+foreach (['MCI_ACME_HOME', 'MCI_ACME_CONFIG_HOME', 'LE_CONFIG_HOME', 'LE_WORKING_DIR', 'CERT_HOME'] as $name) {
+    $savedEnv[$name] = getenv($name);
+    putenv($name);
+}
+
+$fakeHome = test_temp_dir('home');
+putenv('MCI_ACME_HOME=' . $fakeHome);
+
+$t->equals($fakeHome . '/.acme.sh', Paths::defaultBaseDir(), '默认目录就是 acme.sh 的那个');
+
+// 旧版本默认写在 ~/.mci-acme，升级后不能把用户的证书甩掉
+mkdir($fakeHome . '/.mci-acme', 0700, true);
+$t->equals(
+    $fakeHome . '/.mci-acme',
+    Paths::defaultBaseDir(),
+    '没有 ~/.acme.sh 而旧目录还在时，继续用旧的'
+);
+
+mkdir($fakeHome . '/.acme.sh', 0700, true);
+$t->equals($fakeHome . '/.acme.sh', Paths::defaultBaseDir(), '两个都在时以 acme.sh 的为准');
+
+putenv('LE_WORKING_DIR=/opt/acme-working/');
+$t->equals('/opt/acme-working', Paths::defaultBaseDir(), '认 acme.sh 的 LE_WORKING_DIR，尾部斜杠要去掉');
+
+putenv('LE_CONFIG_HOME=/etc/acme-config');
+$t->equals('/etc/acme-config', Paths::defaultBaseDir(), 'LE_CONFIG_HOME 优先于 LE_WORKING_DIR');
+
+putenv('MCI_ACME_CONFIG_HOME=/var/lib/mci');
+$t->equals('/var/lib/mci', Paths::defaultBaseDir(), 'MCI_ACME_CONFIG_HOME 最高——想和 acme.sh 分家就设它');
+
+putenv('MCI_ACME_CONFIG_HOME');
+putenv('LE_CONFIG_HOME');
+putenv('LE_WORKING_DIR');
+
+$t->group('CERT_HOME：证书目录可以单独挪走');
+
+putenv('CERT_HOME=/srv/certs/');
+$envCertPaths = new Paths($base);
+$t->equals($base . '/account.conf', $envCertPaths->getAccountConfPath(), '账户与全局配置仍留在根目录');
+$t->equals(
+    $base . '/ca/acme-v02.api.letsencrypt.org/directory/account.key',
+    $envCertPaths->getAccountKeyPath('https://acme-v02.api.letsencrypt.org/directory'),
+    '账户密钥也留在根目录'
+);
+$t->equals('/srv/certs/example.com', $envCertPaths->getDomainDir('example.com'), '证书跟着 CERT_HOME 走');
+$t->ok($envCertPaths->hasCustomCertHome(), '环境变量算显式指定');
+putenv('CERT_HOME');
+
+$plainPaths = new Paths($base);
+$t->equals($base, $plainPaths->getCertHome(), '没设过就等于根目录');
+$t->ok(!$plainPaths->hasCustomCertHome(), '没设过不算显式指定');
+
+$explicitPaths = new Paths($base, '/srv/explicit/');
+$t->equals('/srv/explicit/example.com_ecc', $explicitPaths->getDomainDir('example.com', true), '构造参数指定的证书根');
+
+// acme.sh 用 --cert-home 挪过证书时，路径就写在 account.conf 的 CERT_HOME 里
+$configHomeBase = test_temp_dir('certhome-conf');
+$configCertHome = test_temp_dir('certhome-conf-certs');
+file_put_contents($configHomeBase . '/account.conf', "CERT_HOME='" . $configCertHome . "'\n");
+$acmeWithCertHome = new \Mci\Acme\Acme($configHomeBase);
+$t->equals(
+    $configCertHome . '/example.com',
+    $acmeWithCertHome->getPaths()->getDomainDir('example.com'),
+    'account.conf 里的 CERT_HOME 应当被认出来'
+);
+$t->equals(
+    $configHomeBase . '/account.conf',
+    $acmeWithCertHome->getPaths()->getAccountConfPath(),
+    '账户配置本身不受 CERT_HOME 影响'
+);
+
+foreach ($savedEnv as $name => $value) {
+    if (\is_string($value) && $value !== '') {
+        putenv($name . '=' . $value);
+    } else {
+        putenv($name);
+    }
+}
 
 exit($t->summary());

@@ -100,6 +100,7 @@ class Application
 
         try {
             $acme = new Acme($this->resolveBaseDir($args), $logger);
+            $this->applyCertHome($args, $acme);
             $this->applyProxy($args, $acme, $logger);
 
             return $command->execute($args, $acme, $logger);
@@ -225,6 +226,20 @@ class Application
         return $home !== null && $home !== '' ? $home : null;
     }
 
+    /**
+     * --cert-home 单独挪证书目录，与 acme.sh 的同名选项一致。
+     *
+     * 在 Acme 构造之后再设：account.conf 里可能也写着 CERT_HOME，
+     * 命令行要压在它上面，就得等配置读完。
+     */
+    private function applyCertHome(ArgvParser $args, Acme $acme): void
+    {
+        $certHome = $args->get('cert-home');
+        if ($certHome !== null && $certHome !== '') {
+            $acme->getPaths()->setCertHome($certHome);
+        }
+    }
+
     private function printHelp(?string $topic): void
     {
         if ($topic !== null && $topic !== '') {
@@ -257,6 +272,9 @@ class Application
         $lines[] = '';
         $lines[] = '通用选项：';
         $lines[] = '  --home <目录>       配置与证书的存放目录（默认 ' . Paths::defaultBaseDir() . '）';
+        $lines[] = '                      默认与 acme.sh 共用 ~/.acme.sh，它签的证书直接能续；';
+        $lines[] = '                      别名 --config-home，也认 acme.sh 的 LE_CONFIG_HOME / LE_WORKING_DIR';
+        $lines[] = '  --cert-home <目录>  只把证书挪到别处，账户仍留在 --home（同 acme.sh）';
         $lines[] = '  --debug             打印调试日志，含每一次 HTTP 请求';
         $lines[] = '  --quiet             只输出错误';
         $lines[] = '  --log <文件>        把日志追加写到文件，cron 里建议加上';

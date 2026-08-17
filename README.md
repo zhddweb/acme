@@ -160,6 +160,9 @@ acme.sh 风格的写法也能用，现有脚本改个程序名就行：
 mci-acme --issue -d example.com -w /var/www/html --server letsencrypt_test
 ```
 
+数据目录也是同一个（默认 `~/.acme.sh`），所以 acme.sh 签过的证书这边
+`mci-acme renew -d example.com` 直接就能续，不用重签、不用导入。详见[文件布局](#文件布局)。
+
 ## 作为库使用
 
 ```php
@@ -238,10 +241,13 @@ $csr = Csr::createPem($key, ['example.com', '*.example.com']);
 
 ## 文件布局
 
-默认在 `~/.mci-acme/`，结构照抄 acme.sh，两边可以互相迁移：
+**默认目录就是 acme.sh 的 `~/.acme.sh/`**，不是另起一个。机器上装过 acme.sh 的话，
+原有的账户密钥和证书直接就能用——`mci-acme list` 列得出来，`mci-acme renew -d ...`
+续的就是那张证书，不用重签（重签还会白白吃掉 CA 的速率限制额度）。
+反过来也一样：本库写出来的文件 acme.sh 认得，两个客户端可以随时换着用。
 
 ```
-~/.mci-acme/
+~/.acme.sh/
   account.conf                    全局配置
   ca/<host>/<path>/
     account.key                   账户私钥（0600）
@@ -255,7 +261,20 @@ $csr = Csr::createPem($key, ['example.com', '*.example.com']);
     example.com.conf              签发参数，续期时照着重放
 ```
 
-想直接接管 acme.sh 的数据，把 `--home ~/.acme.sh` 指过去即可。
+目录位置按这个顺序决定，acme.sh 那套环境变量照认：
+
+| 来源 | 说明 |
+|---|---|
+| `--home <目录>`（别名 `--config-home`） | 命令行，优先级最高 |
+| `MCI_ACME_CONFIG_HOME` | 本库专用，想和 acme.sh **分开**存就设这个 |
+| `LE_CONFIG_HOME` | acme.sh 的 `--config-home` |
+| `LE_WORKING_DIR` | acme.sh 的 `--home` |
+| `~/.acme.sh` | 默认 |
+
+证书目录还能单独挪走（acme.sh 的 `--cert-home`）：命令行 `--cert-home` >
+环境变量 `CERT_HOME` > `account.conf` 里的 `CERT_HOME` > 跟着上面的根目录。
+acme.sh 用 `--cert-home` 挪过证书的机器，这个键已经写在 `account.conf` 里了，
+本库读得到，什么都不用配。
 
 ## 一些实现上的取舍
 
