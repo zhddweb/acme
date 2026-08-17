@@ -34,11 +34,8 @@ build/*
 *.bak
 *.orig
 
-# 写成 .claude/* 而不是 .claude/：整个目录被排除时 git 不会进去看，
-# 下面的白名单就不起作用了。CLAUDE.md 是给协作者与 AI 助手看的项目约束，
-# 必须随仓库分发；其余本地配置照旧忽略
-.claude/*
-!.claude/CLAUDE.md
+# 本地的 AI 助手配置与项目约束，不进仓库
+.claude/
 
 # php-acme 自身产物：测试临时目录、真实签发出来的密钥与证书
 /tests/tmp/

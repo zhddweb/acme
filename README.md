@@ -237,7 +237,8 @@ $csr = Csr::createPem($key, ['example.com', '*.example.com']);
 签发时凭据会存进证书目录的 `.conf`（带 `SAVED_` 前缀，与 acme.sh 一致），之后续期不用再 export。
 
 **加一家新的很简单**：实现 `DnsProviderInterface` 的两个方法，在 `ProviderFactory::MAP` 注册短名，
-补一条用 `MockTransport` 的测试。详见 [.claude/CLAUDE.md](.claude/CLAUDE.md)。
+在 [tests/dns_provider_test.php](tests/dns_provider_test.php) 里用假的 HTTP transport
+补一条测试，断言请求的 URL、方法、鉴权头与请求体——不要打真实 API。
 
 ## 文件布局
 
@@ -325,8 +326,20 @@ composer test-network  # 对 Let's Encrypt staging 跑一次真实签发（需�
 
 ## 协作与开发约定
 
-见 [.claude/CLAUDE.md](.claude/CLAUDE.md)：PHP 7.2 的语法红线、加密相关的坑、
-新增 DNS 提供商的步骤、以及「改完必须跑测试再提交」的收尾流程。
+- **最低支持 PHP 7.2**，这是硬约束。开发机上的 `php -l` 用的是当前版本的解析器，
+  7.3+ 的语法在那里一路绿灯，只有真跑在 7.2 上才会炸——别拿「本地没报错」当依据。
+  类型化属性、箭头函数、`??=`、`match`、构造器属性提升、`?->` 一律不能用；
+  `str_contains` 这类新函数走 [src/polyfill.php](src/polyfill.php)。
+  [tests/php72_compat_test.php](tests/php72_compat_test.php) 会静态扫描拦回退，
+  新增一类禁用语法时要同时补规则和自检正例。
+- **不调用任何外部进程**：`exec`、`shell_exec`、`system`、`passthru`、`proc_open`、
+  `popen` 都不许出现，[tests/no_exec_test.php](tests/no_exec_test.php) 扫描拦截。
+- **加密的三个坑**：`openssl_sign()` 对 EC 密钥产出的是 DER 编码的 `SEQUENCE {r, s}`，
+  而 JWS 要的是定长 `R || S` 拼接；`base64url` 统一走
+  [src/Crypto/Base64Url.php](src/Crypto/Base64Url.php)；
+  JWK thumbprint 的字段顺序是 RFC 7638 强制的，错了服务端只会回一句含糊的 unauthorized。
+- **改完先跑 `composer test`**，全绿再提交。测试不许打真实 CA，
+  联网的验证放 [tests/network/](tests/network/) 用 `composer test-network` 单独跑。
 
 ## 许可
 
