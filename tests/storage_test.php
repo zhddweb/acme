@@ -87,12 +87,12 @@ $t->equals('dns_cf', $loaded['config']->get('Le_Webroot'), '验证方式应当�
 
 $t->group('acme.sh 的 Le_Alt=no');
 
-// acme.sh 在没有备用域名时会写 Le_Alt='no'，不能把它当成域名
+// acme.sh 在没有备用域名时会写 Le_Alt='no'：写的时候要照写（否则 acme.sh 比对域名时
+// 会误判「域名已变更」而重签），读的时候不能把它当成域名
 $singleStorage = new CertificateStorage($paths);
 $singleStorage->saveIssueConfig(['single.example.com'], [], false);
 $singleConfig = $singleStorage->getConfig('single.example.com', false);
-$singleConfig->set('Le_Alt', 'no');
-$singleConfig->save();
+$t->equals('no', $singleConfig->get('Le_Alt'), "单域名时应当写 Le_Alt='no'，与 acme.sh 一致");
 
 $singleLoaded = $singleStorage->loadIssueConfig('single.example.com', false);
 $t->equals(['single.example.com'], $singleLoaded['domains'], "Le_Alt='no' 应当被忽略");
@@ -133,6 +133,16 @@ $nextRenew = $config->getInt('Le_NextRenewTime', 0);
 
 $t->ok($createTime > 0, '应当记下签发时间');
 $t->equals(30 * 86400, $nextRenew - $createTime, '下次续期时间应当是签发时间加上续期天数');
+$t->equals(
+    gmdate('Y-m-d\\TH:i:s\\Z', $createTime),
+    $config->get('Le_CertCreateTimeStr'),
+    '可读的签发时间要与数值键同步（acme.sh --list 显示的是它）'
+);
+$t->equals(
+    gmdate('Y-m-d\\TH:i:s\\Z', $nextRenew),
+    $config->get('Le_NextRenewTimeStr'),
+    '可读的下次续期时间要与数值键同步'
+);
 
 $t->group('删除');
 

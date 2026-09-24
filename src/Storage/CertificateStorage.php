@@ -31,6 +31,8 @@ class CertificateStorage
     const KEY_RENEW_DAYS = 'Le_RenewalDays';
     const KEY_NEXT_RENEW_TIME = 'Le_NextRenewTime';
     const KEY_CERT_CREATE_TIME = 'Le_CertCreateTime';
+    const KEY_CERT_CREATE_TIME_STR = 'Le_CertCreateTimeStr';
+    const KEY_NEXT_RENEW_TIME_STR = 'Le_NextRenewTimeStr';
     const KEY_DNS_SLEEP = 'Le_DNSSleep';
     const KEY_PREFERRED_CHAIN = 'Le_PreferredChain';
     const KEY_DEPLOY_HOOK = 'Le_DeployHook';
@@ -188,8 +190,10 @@ class CertificateStorage
 
         $config = $this->getConfig($main, $ecc);
         $config->set(self::KEY_DOMAIN, $main);
-        // 多域名用逗号分隔，和 acme.sh 的 Le_Alt 格式一致
-        $config->set(self::KEY_ALT, $alt === [] ? null : implode(',', $alt));
+        // 多域名用逗号分隔，和 acme.sh 的 Le_Alt 格式一致。
+        // 没有备用域名时要写 'no' 而不是不写：acme.sh 拿 Le_Domain+Le_Alt 与本次域名比对
+        // 来决定能否跳过签发，缺了这项它会判 Domains have changed 而白白重签一张
+        $config->set(self::KEY_ALT, $alt === [] ? 'no' : implode(',', $alt));
         $config->setMany($extra);
         $config->save();
     }
@@ -274,8 +278,12 @@ class CertificateStorage
     {
         $config = $this->getConfig($domain, $ecc);
         $now = time();
+        $next = $now + $renewDays * 86400;
         $config->set(self::KEY_CERT_CREATE_TIME, (string) $now);
-        $config->set(self::KEY_NEXT_RENEW_TIME, (string) ($now + $renewDays * 86400));
+        $config->set(self::KEY_NEXT_RENEW_TIME, (string) $next);
+        // acme.sh 的 --list 与提示信息读的是这两个可读版本，不同步就会显示旧时间
+        $config->set(self::KEY_CERT_CREATE_TIME_STR, gmdate('Y-m-d\\TH:i:s\\Z', $now));
+        $config->set(self::KEY_NEXT_RENEW_TIME_STR, gmdate('Y-m-d\\TH:i:s\\Z', $next));
         $config->save();
     }
 }

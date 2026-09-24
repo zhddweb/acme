@@ -163,6 +163,59 @@ $t->ok(
     '新证书里应当有新域名'
 );
 
+$t->group('与 acme.sh 混用：.conf 键集合');
+
+// acme.sh 做「域名没变、跳过签发」和 --list 显示时要读的键。这里不和 acme.sh 写出的
+// 全部键做差——Le_LinkCert、Le_OrderFinalize 之类是它自己的中间状态，本库不需要写；
+// 但下面这些少一个，acme.sh 接手时就会判断错或显示错
+$acmeShRequiredKeys = [
+    'Le_Domain',
+    'Le_Alt',
+    'Le_Webroot',
+    'Le_API',
+    'Le_Keylength',
+    'Le_RenewalDays',
+    'Le_CertCreateTime',
+    'Le_CertCreateTimeStr',
+    'Le_NextRenewTime',
+    'Le_NextRenewTimeStr',
+];
+
+$single = $acme->issue(['single.example.com'], $env['webroot'], [
+    'ca' => $env['server']->getDirectoryUrl(),
+    'key_type' => '2048',
+]);
+$t->ok($single->isIssued(), '单域名签发成功');
+
+// 模拟 acme.sh 先写过：旧的可读时间要在续期后被刷新，不能原样带过去
+$singleConfig = $acme->getCertificateStorage()->getConfig('single.example.com', false);
+$singleConfig->set('Le_CertCreateTimeStr', '2000-01-01T00:00:00Z');
+$singleConfig->set('Le_NextRenewTimeStr', '2000-01-31T00:00:00Z');
+$singleConfig->save();
+
+$t->ok($acme->renew('single.example.com', false, true)->isIssued(), '单域名强制续期成功');
+
+$singleConfig = $acme->getCertificateStorage()->getConfig('single.example.com', false);
+$missing = [];
+foreach ($acmeShRequiredKeys as $key) {
+    $value = $singleConfig->get($key);
+    if ($value === null || $value === '') {
+        $missing[] = $key;
+    }
+}
+$t->equals([], $missing, '续期后 acme.sh 需要的键一个都不能少');
+$t->equals('no', $singleConfig->get('Le_Alt'), "续期后仍应当是 Le_Alt='no'");
+$t->equals(
+    gmdate('Y-m-d\\TH:i:s\\Z', $singleConfig->getInt('Le_CertCreateTime', 0)),
+    $singleConfig->get('Le_CertCreateTimeStr'),
+    '续期后可读的签发时间应当刷新'
+);
+$t->equals(
+    gmdate('Y-m-d\\TH:i:s\\Z', $singleConfig->getInt('Le_NextRenewTime', 0)),
+    $singleConfig->get('Le_NextRenewTimeStr'),
+    '续期后可读的下次续期时间应当刷新'
+);
+
 $t->group('部署配置在续期时自动重放');
 
 $installDir = $env['base'] . '/deployed';

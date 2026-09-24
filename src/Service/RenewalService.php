@@ -308,6 +308,8 @@ class RenewalService
                 CertificateStorage::KEY_PREFERRED_CHAIN,
                 CertificateStorage::KEY_CERT_CREATE_TIME,
                 CertificateStorage::KEY_NEXT_RENEW_TIME,
+                CertificateStorage::KEY_CERT_CREATE_TIME_STR,
+                CertificateStorage::KEY_NEXT_RENEW_TIME_STR,
             ], true)) {
                 continue;
             }
